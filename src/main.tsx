@@ -35,7 +35,7 @@ const uid = () => Math.random().toString(36).slice(2, 10)
 const SEARCH_REVEAL_MS = 2600
 const RANK_RAIL_WIDTH = 141
 const RANK_ROW_PADDING = 14
-const HORIZONTAL_STAGGER = 20
+const HORIZONTAL_STAGGER = 0
 
 const createCanvasItem = (item: Omit<CanvasItem, 'id' | 'revealState'>, revealState: CanvasItem['revealState'] = 'searching'): CanvasItem => ({
   ...item,
@@ -186,7 +186,7 @@ function App() {
     const stageBox = stageRef.current?.getBoundingClientRect()
     const targetBase = getCategoryTarget(nextCategoryId, item.width, item.height)
     const gap = 16
-    const targetX = targetBase.x + sameCategoryItems.length * HORIZONTAL_STAGGER
+    const targetX = targetBase.x + sameCategoryItems.length * (targetBase.width + 12)
     const targetY = targetBase.y
     const width = targetBase.width
     const height = targetBase.height
