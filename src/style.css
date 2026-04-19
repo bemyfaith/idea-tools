@@ -41,6 +41,7 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .canvas-background-wrap { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .canvas-background-label { font-size: 13px; color: #cbd8ff; white-space: nowrap; }
 .canvas-background-input { width: 54px; height: 42px; padding: 0; border: 1px solid rgba(255,255,255,0.18); background: #ffffff; border-radius: 0; overflow: hidden; appearance: none; -webkit-appearance: none; }
+.canvas-background-input-round { width: 40px; height: 40px; border-radius: 50%; }
 .canvas-background-input::-webkit-color-swatch-wrapper { padding: 0; }
 .canvas-background-input::-webkit-color-swatch { border: none; border-radius: 0; }
 .rank-color-input::-webkit-color-swatch-wrapper, .rank-text-color-input::-webkit-color-swatch-wrapper { padding: 0; }
