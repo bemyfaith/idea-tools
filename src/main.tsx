@@ -146,7 +146,7 @@ function App() {
       })
       const audioDuration = audio.duration || 0
       const endOffset = 0.3
-      const targetEnd = Math.max(0, animationSeconds - endOffset)
+      const targetEnd = animationSeconds + endOffset
       const startDelay = Math.max(0, targetEnd - audioDuration)
       const startOffset = Math.max(0, audioDuration - targetEnd)
       if (startOffset > 0) audio.currentTime = startOffset
