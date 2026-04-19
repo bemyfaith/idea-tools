@@ -187,9 +187,13 @@ function App() {
     const targetBase = getCategoryTarget(nextCategoryId, item.width, item.height)
     const gap = 12
     const baseWidth = targetBase.width
-    const width = Math.max(120, baseWidth - sameCategoryItems.length * 10)
+    const fullWidth = baseWidth
+    const fullRowSpan = sameCategoryItems.length * (fullWidth + gap)
+    const rowLimit = Math.max(0, (stageRef.current?.getBoundingClientRect().width ?? 1200) - targetBase.x - 24)
+    const isCrowded = fullRowSpan > rowLimit
+    const width = isCrowded ? Math.max(120, rowLimit / Math.max(sameCategoryItems.length + 1, 1) - gap) : fullWidth
     const height = targetBase.height
-    const targetX = targetBase.x + sameCategoryItems.length * Math.max(36, width * 0.55)
+    const targetX = targetBase.x + sameCategoryItems.length * (isCrowded ? Math.max(36, width + 6) : (fullWidth + gap))
     const targetY = targetBase.y
     if (startEl && stageBox) {
       const from = startEl.getBoundingClientRect()
