@@ -76,7 +76,7 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .item-search-overlay::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(135deg, transparent 0 2px, rgb(43, 48, 52) 2px 4px, transparent 4px 6px); opacity: 0.9; }
 .item-search-overlay::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(255,255,255,0.04), rgba(0,0,0,0) 58%); }
 .item-search-stripes { display: none; }
-.item-search-magnifier { position: absolute; left: 50%; top: 50%; width: 34%; height: 34%; transform: translate(-50%, -50%); animation: search-spin 1.2s linear infinite, search-fade-out 180ms ease forwards calc(var(--search-block-duration, 3s) - 0.18s); }
+.item-search-magnifier { position: absolute; left: 50%; top: 50%; width: 34%; height: 34%; transform: translate(-50%, -50%); animation: search-orbit 1.2s linear infinite, search-fade-out 180ms ease forwards calc(var(--search-block-duration, 3s) - 0.18s); transform-origin: center center; }
 .item-search-glass { position: absolute; left: 18%; top: 12%; width: 44%; height: 44%; border: 5px solid rgb(238, 241, 245); border-radius: 50%; box-shadow: 0 0 12px rgba(0,0,0,0.25); background: rgb(15, 21, 26); }
 .item-search-handle { position: absolute; left: 53%; top: 46%; width: 34%; height: 7%; border-radius: 999px; background: rgb(238, 241, 245); transform: rotate(45deg); transform-origin: left center; box-shadow: 0 0 12px rgba(0,0,0,0.25); }
 .item-searching .item-search-overlay { opacity: 1; }
@@ -91,7 +91,7 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .flying-to-layer img { object-fit: contain; background: rgba(0,0,0,0); }
 .flying-back img { width: 100%; height: 100%; object-fit: cover; display: block; }
 @keyframes search-overlay-fade { 0% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; } }
-@keyframes search-spin { 0% { transform: translate(-50%, -50%) rotate(0turn); } 100% { transform: translate(-50%, -50%) rotate(1turn); } }
+@keyframes search-orbit { 0% { transform: translate(-50%, -50%) rotate(0deg) translateX(16%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg) translateX(16%) rotate(-360deg); } }
 @media (max-width: 960px) { .app-shell { grid-template-columns: 1fr; } .sidebar { border-right: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); } }
 
 @keyframes search-fade-out { from { opacity: 1; } to { opacity: 0; } }
