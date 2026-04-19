@@ -36,6 +36,8 @@ const SEARCH_REVEAL_MS = 2600
 const RANK_RAIL_WIDTH = 141
 const RANK_ROW_PADDING = 14
 const HORIZONTAL_STAGGER = 0
+const ROW_START_X = 12
+const ROW_GAP = 10
 
 const createCanvasItem = (item: Omit<CanvasItem, 'id' | 'revealState'>, revealState: CanvasItem['revealState'] = 'searching'): CanvasItem => ({
   ...item,
@@ -168,7 +170,7 @@ function App() {
     const rowHeight = (stageBox?.height ?? 640) / Math.max(rankCategories.length, 1)
     const targetHeight = Math.max(96, rowHeight - RANK_ROW_PADDING * 2)
     const targetWidth = Math.max(120, targetHeight * (aspectWidth / Math.max(aspectHeight, 1)))
-    return { x: RANK_RAIL_WIDTH + 20, y: idx * rowHeight + (rowHeight - targetHeight) / 2, width: targetWidth, height: targetHeight, rowHeight }
+    return { x: ROW_START_X, y: idx * rowHeight + (rowHeight - targetHeight) / 2, width: targetWidth, height: targetHeight, rowHeight }
   }
   const placeItem = (sourceId: string, x?: number, y?: number) => {
     const item = library.find((i) => i.sourceId === sourceId)
@@ -178,36 +180,62 @@ function App() {
     setTemplateState((prev) => ({ ...prev, [templateId]: { ...prev[templateId], items: [...prev[templateId].items, nextItem] } }))
     scheduleReveal(nextItem.id)
   }
+  const relayoutCategory = (categoryId: string, movedItemId?: string) => {
+    const categoryItems = items.filter((item) => item.categoryId === categoryId)
+    const stageWidth = stageRef.current?.getBoundingClientRect().width ?? 1200
+    const stageHeight = stageRef.current?.getBoundingClientRect().height ?? 640
+    const idx = rankCategories.findIndex((category) => category.id === categoryId)
+    const rowHeight = stageHeight / Math.max(rankCategories.length, 1)
+    const targetHeight = Math.max(96, rowHeight - RANK_ROW_PADDING * 2)
+    const y = idx * rowHeight + (rowHeight - targetHeight) / 2
+    const baseWidth = Math.max(120, targetHeight * 1.25)
+    const available = Math.max(0, stageWidth - ROW_START_X - 24)
+    const totalGaps = Math.max(0, categoryItems.length - 1) * ROW_GAP
+    const canFitFull = categoryItems.length * baseWidth + totalGaps <= available
+    const width = canFitFull ? baseWidth : Math.max(72, Math.floor((available - totalGaps) / Math.max(categoryItems.length, 1)))
+    const ordered = [...categoryItems].sort((a, b) => items.findIndex((x) => x.id === a.id) - items.findIndex((x) => x.id === b.id))
+    return ordered.map((it, index) => ({ id: it.id, x: ROW_START_X + index * (width + ROW_GAP), y, width, height: targetHeight, categoryId }))
+  }
+
   const moveSelectedToCategory = (itemId: string, nextCategoryId: string) => {
     const item = items.find((i) => i.id === itemId)
     if (!item) return
-    const sameCategoryItems = items.filter((i) => i.categoryId === nextCategoryId && i.id !== itemId)
     const startEl = document.querySelector(`[data-item-id="${itemId}"]`) as HTMLElement | null
     const stageBox = stageRef.current?.getBoundingClientRect()
-    const targetBase = getCategoryTarget(nextCategoryId, item.width, item.height)
-    const gap = 12
-    const baseWidth = targetBase.width
-    const fullWidth = baseWidth
-    const fullRowSpan = sameCategoryItems.length * (fullWidth + gap)
-    const rowLimit = Math.max(0, (stageRef.current?.getBoundingClientRect().width ?? 1200) - targetBase.x - 24)
-    const isCrowded = fullRowSpan > rowLimit
-    const width = isCrowded ? Math.max(120, rowLimit / Math.max(sameCategoryItems.length + 1, 1) - gap) : fullWidth
-    const height = targetBase.height
-    const targetX = targetBase.x + sameCategoryItems.length * (isCrowded ? Math.max(36, width + 6) : (fullWidth + gap))
-    const targetY = targetBase.y
+    const nextLayout = relayoutCategory(nextCategoryId, itemId)
+    const target = nextLayout.find((it) => it.id === itemId)
+    if (!target) return
     if (startEl && stageBox) {
       const from = startEl.getBoundingClientRect()
       setFlyingToLayer({ itemId, src: item.src, x: from.left, y: from.top, w: from.width, h: from.height })
       requestAnimationFrame(() => {
-        setFlyingToLayer((prev) => prev ? { ...prev, x: stageBox.left + targetX, y: stageBox.top + targetY, w: width, h: height } : prev)
+        setFlyingToLayer((prev) => prev ? { ...prev, x: stageBox.left + target.x, y: stageBox.top + target.y, w: target.width, h: target.height } : prev)
       })
       window.setTimeout(() => {
-        updateItem(itemId, { categoryId: nextCategoryId, x: targetX, y: targetY, width, height, isPreview: false })
+        setTemplateState((prev) => ({
+          ...prev,
+          [templateId]: {
+            ...prev[templateId],
+            items: prev[templateId].items.map((it) => {
+              const layout = nextLayout.find((l) => l.id === it.id)
+              return layout ? { ...it, categoryId: layout.categoryId, x: layout.x, y: layout.y, width: layout.width, height: layout.height, isPreview: false } : it
+            }),
+          },
+        }))
         setFlyingToLayer(null)
       }, 320)
       return
     }
-    updateItem(itemId, { categoryId: nextCategoryId, x: targetX, y: targetY, width, height, isPreview: false })
+    setTemplateState((prev) => ({
+      ...prev,
+      [templateId]: {
+        ...prev[templateId],
+        items: prev[templateId].items.map((it) => {
+          const layout = nextLayout.find((l) => l.id === it.id)
+          return layout ? { ...it, categoryId: layout.categoryId, x: layout.x, y: layout.y, width: layout.width, height: layout.height, isPreview: false } : it
+        }),
+      },
+    }))
   }
 
   const returnToLibrary = (itemId: string) => {
