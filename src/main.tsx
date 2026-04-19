@@ -206,27 +206,6 @@ function App() {
     const nextLayout = relayoutCategory(nextCategoryId)
     const target = nextLayout.find((it) => it.id === itemId)
     if (!target) return
-    if (startEl && stageBox) {
-      const from = startEl.getBoundingClientRect()
-      setFlyingToLayer({ itemId, src: item.src, x: from.left, y: from.top, w: from.width, h: from.height })
-      requestAnimationFrame(() => {
-        setFlyingToLayer((prev) => prev ? { ...prev, x: stageBox.left + target.x, y: stageBox.top + target.y, w: target.width, h: target.height } : prev)
-      })
-      window.setTimeout(() => {
-        setTemplateState((prev) => ({
-          ...prev,
-          [templateId]: {
-            ...prev[templateId],
-            items: prev[templateId].items.map((it) => {
-              const layout = nextLayout.find((l) => l.id === it.id)
-              return layout ? { ...it, categoryId: layout.categoryId, x: layout.x, y: layout.y, width: layout.width, height: layout.height, isPreview: false } : it
-            }),
-          },
-        }))
-        setFlyingToLayer(null)
-      }, 320)
-      return
-    }
     setTemplateState((prev) => ({
       ...prev,
       [templateId]: {
@@ -237,6 +216,14 @@ function App() {
         }),
       },
     }))
+    if (startEl && stageBox) {
+      const from = startEl.getBoundingClientRect()
+      setFlyingToLayer({ itemId, src: item.src, x: from.left, y: from.top, w: from.width, h: from.height })
+      requestAnimationFrame(() => {
+        setFlyingToLayer((prev) => prev ? { ...prev, x: stageBox.left + target.x, y: stageBox.top + target.y, w: target.width, h: target.height } : prev)
+      })
+      window.setTimeout(() => setFlyingToLayer(null), 320)
+    }
   }
 
   const returnToLibrary = (itemId: string) => {
