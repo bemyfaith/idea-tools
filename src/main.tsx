@@ -167,7 +167,7 @@ function App() {
     const rowHeight = (stageBox?.height ?? 640) / Math.max(rankCategories.length, 1)
     const targetHeight = Math.max(96, rowHeight - RANK_ROW_PADDING * 2)
     const targetWidth = Math.max(120, targetHeight * (aspectWidth / Math.max(aspectHeight, 1)))
-    return { x: RANK_RAIL_WIDTH + 20, y: idx * rowHeight + (rowHeight - targetHeight) / 2, width: targetWidth, height: targetHeight }
+    return { x: RANK_RAIL_WIDTH + 20, y: idx * rowHeight + (rowHeight - targetHeight) / 2, width: targetWidth, height: targetHeight, rowHeight }
   }
   const placeItem = (sourceId: string, x?: number, y?: number) => {
     const item = library.find((i) => i.sourceId === sourceId)
@@ -180,22 +180,28 @@ function App() {
   const moveSelectedToCategory = (itemId: string, nextCategoryId: string) => {
     const item = items.find((i) => i.id === itemId)
     if (!item) return
+    const sameCategoryItems = items.filter((i) => i.categoryId === nextCategoryId && i.id !== itemId)
     const startEl = document.querySelector(`[data-item-id="${itemId}"]`) as HTMLElement | null
     const stageBox = stageRef.current?.getBoundingClientRect()
-    const target = getCategoryTarget(nextCategoryId, item.width, item.height)
+    const targetBase = getCategoryTarget(nextCategoryId, item.width, item.height)
+    const gap = 16
+    const targetX = targetBase.x + sameCategoryItems.length * gap
+    const targetY = targetBase.y + sameCategoryItems.length * 10
+    const width = targetBase.width
+    const height = targetBase.height
     if (startEl && stageBox) {
       const from = startEl.getBoundingClientRect()
       setFlyingToLayer({ itemId, src: item.src, x: from.left, y: from.top, w: from.width, h: from.height })
       requestAnimationFrame(() => {
-        setFlyingToLayer((prev) => prev ? { ...prev, x: stageBox.left + target.x, y: stageBox.top + target.y, w: target.width, h: target.height } : prev)
+        setFlyingToLayer((prev) => prev ? { ...prev, x: stageBox.left + targetX, y: stageBox.top + targetY, w: width, h: height } : prev)
       })
       window.setTimeout(() => {
-        updateItem(itemId, { categoryId: nextCategoryId, x: target.x, y: target.y, width: target.width, height: target.height, isPreview: false })
+        updateItem(itemId, { categoryId: nextCategoryId, x: targetX, y: targetY, width, height, isPreview: false })
         setFlyingToLayer(null)
       }, 320)
       return
     }
-    updateItem(itemId, { categoryId: nextCategoryId, x: target.x, y: target.y, width: Math.max(120, item.width * 0.55), height: Math.max(120, item.height * 0.55), isPreview: false })
+    updateItem(itemId, { categoryId: nextCategoryId, x: targetX, y: targetY, width, height, isPreview: false })
   }
 
   const returnToLibrary = (itemId: string) => {
