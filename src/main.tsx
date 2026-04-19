@@ -39,6 +39,15 @@ const HORIZONTAL_STAGGER = 0
 const ROW_START_X = 160
 const ROW_GAP = 10
 
+
+const SOUND_FILES = {
+  redgold: '/@fs/Users/xulanjing/.openclaw/workspace/红金.mp3',
+  purpleblue: '/@fs/Users/xulanjing/.openclaw/workspace/紫蓝.mp3',
+  green: '/@fs/Users/xulanjing/.openclaw/workspace/绿.mp3',
+} as const
+
+type SoundBand = 'redgold' | 'purpleblue' | 'green'
+
 const createCanvasItem = (item: Omit<CanvasItem, 'id' | 'revealState'>, revealState: CanvasItem['revealState'] = 'searching'): CanvasItem => ({
   ...item,
   id: uid(),
@@ -68,6 +77,7 @@ function App() {
   const [canvasBackgroundColor, setCanvasBackgroundColor] = useState('#191c1f')
   const [deltaSearchEnabled, setDeltaSearchEnabled] = useState(true)
   const [deltaSearchDefaultDuration, setDeltaSearchDefaultDuration] = useState('3')
+  const [soundSettings, setSoundSettings] = useState({ redgoldMin: '3', purpleblueMin: '1', greenMax: '1' })
   const [templateState, setTemplateState] = useState<Record<TemplateId, TemplateState>>({
     clean: { library: [], items: [] },
     video: { library: [], items: [] },
@@ -118,13 +128,43 @@ function App() {
     return createCanvasItem({ name: fileName, src, x: pos.x, y: pos.y, width: 180, height: 180, rotation: 0, categoryId: '', sourceId: uid(), isPreview: false })
   }
 
+
+  const getSoundBand = (seconds: number): SoundBand => {
+    const greenMax = Number(soundSettings.greenMax) || 1
+    const redgoldMin = Number(soundSettings.redgoldMin) || 3
+    if (seconds >= redgoldMin) return 'redgold'
+    if (seconds >= greenMax) return 'purpleblue'
+    return 'green'
+  }
+
+  const playSearchSound = async (seconds: number) => {
+    if (!deltaSearchEnabled || seconds <= 0) return
+    const band = getSoundBand(seconds)
+    const audio = new Audio(SOUND_FILES[band])
+    audio.preload = 'auto'
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const onLoaded = () => resolve()
+        const onError = () => reject(new Error('audio load failed'))
+        audio.addEventListener('loadedmetadata', onLoaded, { once: true })
+        audio.addEventListener('error', onError, { once: true })
+      })
+      const duration = audio.duration || seconds
+      if (duration > 0) audio.playbackRate = Math.max(0.1, duration / seconds)
+      await audio.play()
+      window.setTimeout(() => { audio.pause(); audio.currentTime = 0 }, seconds * 1000)
+    } catch {
+      // ignore audio failures
+    }
+  }
+
   const previewLibraryItem = (sourceId: string) => {
     const item = library.find((entry) => entry.sourceId === sourceId)
     const stageBox = stageRef.current?.getBoundingClientRect()
     if (!item || !stageBox) return
     const width = Math.min(340, stageBox.width * 0.28)
     const height = width
-    const currentDuration = templateState[templateId].library.find((entry) => entry.sourceId === sourceId)?.animationDuration ?? Number(deltaSearchDefaultDuration) || 3
+    const currentDuration = (templateState[templateId].library.find((entry) => entry.sourceId === sourceId)?.animationDuration ?? Number(deltaSearchDefaultDuration)) || 3
     const nextItem = createCanvasItem({
       name: item.name,
       src: item.src,
@@ -142,6 +182,7 @@ function App() {
       ...prev,
       [templateId]: { ...prev[templateId], items: [...prev[templateId].items, nextItem] },
     }))
+    void playSearchSound(currentDuration)
     setSelectedId(nextItem.id)
   }
 
@@ -330,7 +371,8 @@ function App() {
       <input ref={singleInputRef} type="file" accept="image/*" multiple hidden onChange={onUpload} />
       <input ref={folderInputRef} type="file" accept="image/*" multiple hidden onChange={onUpload} {...({ webkitdirectory: 'true' } as React.InputHTMLAttributes<HTMLInputElement>)} />
       <div className="panel"><div className="panel-title">模板切换</div><div className="template-list">{templates.map((item) => <button key={item.id} className={`template-card ${templateId === item.id ? 'active' : ''}`} onClick={() => switchTemplate(item.id)}><LayoutTemplate size={16} /><div><strong>{item.name}</strong><span>{item.description}</span></div></button>)}</div></div>
-      <div className="panel"><div className="panel-title">等级模板编辑</div>
+      <div className="panel"><div className="panel-title">等级模版编辑</div>
+        <div className="canvas-edit-row"><label className="toggle-row"><input type="checkbox" checked={template.showRightDividers} onChange={(e) => setTemplates((prev) => prev.map((item) => item.id === templateId ? { ...item, showRightDividers: e.target.checked } : item))} />分割线</label><div className="canvas-background-wrap"><div className="canvas-background-label">画布背景色</div><input className="canvas-background-input" type="color" value={canvasBackgroundColor} onChange={(e) => setCanvasBackgroundColor(e.target.value)} /></div></div>
         {rankCategories.map((category) => (
           <div key={category.id} className="rank-edit-row">
             <input className="rank-name-input" value={category.label} onChange={(e) => setRankCategories((prev) => prev.map((item) => item.id === category.id ? { ...item, label: e.target.value } : item))} />
@@ -340,11 +382,10 @@ function App() {
           </div>
         ))}
       </div>
-      <div className="panel"><div className="panel-title">画布编辑</div><div className="canvas-edit-row"><label className="toggle-row"><input type="checkbox" checked={template.showRightDividers} onChange={(e) => setTemplates((prev) => prev.map((item) => item.id === templateId ? { ...item, showRightDividers: e.target.checked } : item))} />分割线</label><div className="canvas-background-wrap"><div className="canvas-background-label">画布背景色</div><input className="canvas-background-input" type="color" value={canvasBackgroundColor} onChange={(e) => setCanvasBackgroundColor(e.target.value)} /></div></div></div>
-      {templateId === 'clean' && <div className="panel"><div className="panel-title">画布编辑</div><div className="canvas-edit-row"><label className="toggle-row"><input type="checkbox" checked={deltaSearchEnabled} onChange={(e) => setDeltaSearchEnabled(e.target.checked)} />启用🔍动画</label><label className="toggle-row">🔍默认时长<input className="rank-size-input" style={{ width: 86 }} type="number" min="0.5" step="0.1" value={deltaSearchDefaultDuration} onChange={(e) => setDeltaSearchDefaultDuration(e.target.value)} /></label></div></div>}
+      <div className="panel"><div className="panel-title">素材编辑</div><div className="canvas-edit-row"><label className="toggle-row"><input type="checkbox" checked={deltaSearchEnabled} onChange={(e) => setDeltaSearchEnabled(e.target.checked)} />启用🔍动画</label><label className="toggle-row">🔍默认时长<input className="rank-size-input" style={{ width: 86 }} type="number" min="0.5" step="0.1" value={deltaSearchDefaultDuration} onChange={(e) => setDeltaSearchDefaultDuration(e.target.value)} /></label><label className="toggle-row">红金音效&gt;=<input className="rank-size-input" style={{ width: 72 }} type="number" min="0.5" step="0.1" value={soundSettings.redgoldMin} onChange={(e) => setSoundSettings((prev) => ({ ...prev, redgoldMin: e.target.value }))} />s</label><label className="toggle-row">紫蓝音效<input className="rank-size-input" style={{ width: 72 }} type="number" min="0.1" step="0.1" value={soundSettings.greenMax} onChange={(e) => setSoundSettings((prev) => ({ ...prev, greenMax: e.target.value }))} />s-<input className="rank-size-input" style={{ width: 72 }} type="number" min="0.1" step="0.1" value={soundSettings.redgoldMin} onChange={(e) => setSoundSettings((prev) => ({ ...prev, redgoldMin: e.target.value }))} />s</label><label className="toggle-row">绿色音效&lt;<input className="rank-size-input" style={{ width: 72 }} type="number" min="0.1" step="0.1" value={soundSettings.greenMax} onChange={(e) => setSoundSettings((prev) => ({ ...prev, greenMax: e.target.value }))} />s</label></div></div>
       {selected && <div className="panel"><div className="panel-title">当前选中图片</div><label>等级<select value={selected.categoryId || ''} onChange={(e) => moveSelectedToCategory(selected.id, e.target.value)}><option value="">无</option>{rankCategories.map((category) => <option key={category.id} value={category.id}>{category.label}</option>)}</select></label><div className="row-actions"><button className="danger" onClick={() => removeItem(selected.id)}><Trash2 size={16} />删除</button></div></div>}
       <div className="panel hint"><div className="panel-title">说明</div><p>1. 选择模板</p><p>2. 可以直接导入本地图片或整个文件夹</p><p>3. 在画布里拖动、缩放、旋转</p><p>4. 不上传服务器，全部只在本地浏览器里处理</p></div>
-      {contextMenu && (() => { const current = library.find((item) => item.sourceId === contextMenu.sourceId)?.animationDuration ?? Number(deltaSearchDefaultDuration) || 3; return <div className="context-menu" style={{ left: contextMenu.x, top: contextMenu.y }} onClick={(e) => e.stopPropagation()}><div className="context-menu-title">动画时长：{current}秒</div><div className="context-menu-input-row"><input autoFocus value={customDurationInput} onChange={(e) => setCustomDurationInput(e.target.value)} placeholder="填写秒数" onKeyDown={(e) => { if (e.key === 'Enter') { const seconds = Number(customDurationInput); if (!Number.isFinite(seconds) || seconds <= 0) return; applyLibraryDuration(contextMenu.sourceId, seconds) } }} /><button onClick={() => { const seconds = Number(customDurationInput); if (!Number.isFinite(seconds) || seconds <= 0) return; applyLibraryDuration(contextMenu.sourceId, seconds) }}>确定</button></div></div> })()}
+      {contextMenu && (() => { const current = (library.find((item) => item.sourceId === contextMenu.sourceId)?.animationDuration ?? Number(deltaSearchDefaultDuration)) || 3; return <div className="context-menu" style={{ left: contextMenu.x, top: contextMenu.y }} onClick={(e) => e.stopPropagation()}><div className="context-menu-title">动画时长：{current}秒</div><div className="context-menu-input-row"><input autoFocus value={customDurationInput} onChange={(e) => setCustomDurationInput(e.target.value)} placeholder="填写秒数" onKeyDown={(e) => { if (e.key === 'Enter') { const seconds = Number(customDurationInput); if (!Number.isFinite(seconds) || seconds <= 0) return; applyLibraryDuration(contextMenu.sourceId, seconds) } }} /><button onClick={() => { const seconds = Number(customDurationInput); if (!Number.isFinite(seconds) || seconds <= 0) return; applyLibraryDuration(contextMenu.sourceId, seconds) }}>确定</button></div></div> })()}
     </aside>
     <main className="workspace"><div className="toolbar"><div className="toolbar-left"><Move size={16} />当前模板：{template.name}</div><button className="primary" disabled={loading} onClick={exportPng}><Download size={16} />{loading ? '导出中...' : '导出 PNG'}</button></div><div className="stage-wrap"><div ref={stageRef} className={`stage ${template.stageClass}`} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); const sid = e.dataTransfer.getData('text/plain'); if (sid) { placeItem(sid); return } if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files) }}><div className={`stage-rank-rail ${template.railClass}`}><div className="stage-rank-title-col">{rankCategories.map((category) => <div key={category.id} className="stage-rank-title" style={{ background: category.track, color: category.textColor, fontSize: `${category.textSize}px` }}>{category.label}</div>)}</div><div className={`stage-rank-grid ${template.showRightDividers ? '' : 'no-dividers'}`}>{rankCategories.map((category) => <div key={category.id} className="stage-rank-row" style={{ borderBottomColor: category.track }}><div className="stage-rank-area" style={{ background: canvasBackgroundColor }} /></div>)}</div></div>{items.map((item) => <Rnd key={item.id} size={{ width: item.width, height: item.height }} position={{ x: item.x, y: item.y }} onDragStop={(_, data) => { if (isOverLibrary(data.x, data.y, item.width, item.height)) { returnToLibrary(item.id); return } updateItem(item.id, { x: data.x, y: data.y }) }} onResizeStop={(_, __, ref, ___, position) => { updateItem(item.id, { width: ref.offsetWidth, height: ref.offsetHeight, ...position }) }} onMouseDown={() => setSelectedId(item.id)} data-item-id={item.id} className={`item ${template.itemClass} ${selectedId === item.id ? 'selected' : ''} ${templateId === 'clean' && item.revealState === 'searching' ? 'item-searching' : 'item-revealed'} ${item.isPreview ? 'item-preview' : ''} ${templateId === 'clean' && !deltaSearchEnabled ? 'item-no-search' : ''}`}><div className="item-frame" style={{ transform: `rotate(${item.rotation}deg)`, ...(item.animationDuration ? ({ ['--search-block-duration' as any]: `${item.animationDuration}s` } as React.CSSProperties) : {}) }}><img src={item.src} alt={item.name} draggable={false} />{templateId === 'clean' && <div className="item-search-overlay" aria-hidden="true"><div className="item-search-stripes" /><div className="item-search-magnifier"><div className="item-search-glass" /><div className="item-search-handle" /></div></div>}</div></Rnd>)}{flyingBack && <div className="flying-back" style={{ left: flyingBack.x, top: flyingBack.y, width: flyingBack.w, height: flyingBack.h }}><img src={flyingBack.src} alt="moving" /></div>}{flyingToLayer && <div className="flying-back flying-to-layer" style={{ left: flyingToLayer.x, top: flyingToLayer.y, width: flyingToLayer.w, height: flyingToLayer.h }}><img src={flyingToLayer.src} alt="moving to layer" /></div>}</div><div ref={libraryRef} className="library-panel"><div className="panel-title">素材库</div>{available.length === 0 ? <div className="empty">把图片导入到这里。</div> : <div className="asset-list asset-grid">{available.map((item) => <button key={item.sourceId} className="asset-card asset-card-image" draggable onContextMenu={(e) => { e.preventDefault(); setContextMenu({ x: e.clientX, y: e.clientY, sourceId: item.sourceId }) }} onClick={() => { previewLibraryItem(item.sourceId); setTemplateState((prev) => ({ ...prev, [templateId]: { ...prev[templateId], library: prev[templateId].library.filter((i) => i.sourceId !== item.sourceId) } })) }} onDragStart={(e) => { e.dataTransfer.setData('text/plain', item.sourceId) }}><img src={item.src} alt={item.name} /></button>)}</div>}</div></div></main></div>
 
