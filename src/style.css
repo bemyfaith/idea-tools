@@ -100,3 +100,6 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .context-menu button { color: #e9f0ff; background: rgba(255,255,255,0.06); padding: 8px 12px; border-radius: 10px; text-align: left; }
 .context-menu button:hover { background: rgba(91,124,250,0.22); }
 .context-menu button.active { background: rgba(37, 194, 160, 0.26); outline: 1px solid rgba(37, 194, 160, 0.45); }
+.context-menu-input-row { display: flex; gap: 8px; align-items: center; }
+.context-menu-input-row input { width: 92px; padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.06); color: #e9f0ff; }
+.context-menu-input-row button { flex: 1; justify-content: center; }
