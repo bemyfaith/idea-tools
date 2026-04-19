@@ -66,6 +66,8 @@ function App() {
   const [rankCategories, setRankCategories] = useState<RankCategory[]>(INITIAL_RANK_CATEGORIES_VIDEO)
   const [templateId, setTemplateId] = useState<TemplateId>('video')
   const [canvasBackgroundColor, setCanvasBackgroundColor] = useState('#191c1f')
+  const [deltaSearchEnabled, setDeltaSearchEnabled] = useState(true)
+  const [deltaSearchDefaultDuration, setDeltaSearchDefaultDuration] = useState('3')
   const [templateState, setTemplateState] = useState<Record<TemplateId, TemplateState>>({
     clean: { library: [], items: [] },
     video: { library: [], items: [] },
@@ -113,7 +115,7 @@ function App() {
 
   const makeLibraryItem = (fileName: string, src: string, posIndex: number) => {
     const pos = template.defaultPositions[posIndex % template.defaultPositions.length]
-    return createCanvasItem({ name: fileName, src, x: pos.x, y: pos.y, width: 180, height: 180, rotation: 0, categoryId: '', sourceId: uid(), isPreview: false, animationDuration: 3 })
+    return createCanvasItem({ name: fileName, src, x: pos.x, y: pos.y, width: 180, height: 180, rotation: 0, categoryId: '', sourceId: uid(), isPreview: false, animationDuration: Number(deltaSearchDefaultDuration) || 3 })
   }
 
   const previewLibraryItem = (sourceId: string) => {
@@ -134,7 +136,7 @@ function App() {
       categoryId: '',
       sourceId: item.sourceId,
       isPreview: true,
-      animationDuration: currentDuration,
+      animationDuration: deltaSearchEnabled ? currentDuration : 0,
     }, 'searching')
     setTemplateState((prev) => ({
       ...prev,
@@ -328,7 +330,6 @@ function App() {
       <input ref={singleInputRef} type="file" accept="image/*" multiple hidden onChange={onUpload} />
       <input ref={folderInputRef} type="file" accept="image/*" multiple hidden onChange={onUpload} {...({ webkitdirectory: 'true' } as React.InputHTMLAttributes<HTMLInputElement>)} />
       <div className="panel"><div className="panel-title">模板切换</div><div className="template-list">{templates.map((item) => <button key={item.id} className={`template-card ${templateId === item.id ? 'active' : ''}`} onClick={() => switchTemplate(item.id)}><LayoutTemplate size={16} /><div><strong>{item.name}</strong><span>{item.description}</span></div></button>)}</div></div>
-      <div className="panel"><div className="panel-title">画布编辑</div><div className="canvas-edit-row"><label className="toggle-row"><input type="checkbox" checked={template.showRightDividers} onChange={(e) => setTemplates((prev) => prev.map((item) => item.id === templateId ? { ...item, showRightDividers: e.target.checked } : item))} />分割线</label><div className="canvas-background-wrap"><div className="canvas-background-label">画布背景色</div><input className="canvas-background-input" type="color" value={canvasBackgroundColor} onChange={(e) => setCanvasBackgroundColor(e.target.value)} /></div></div></div>
       <div className="panel"><div className="panel-title">等级模板编辑</div>
         {rankCategories.map((category) => (
           <div key={category.id} className="rank-edit-row">
@@ -339,8 +340,8 @@ function App() {
           </div>
         ))}
       </div>
-      {selected && <div className="panel"><div className="panel-title">属性面板</div><label>分层<select value={selected.categoryId || ''} onChange={(e) => moveSelectedToCategory(selected.id, e.target.value)}><option value="">无</option>{rankCategories.map((category) => <option key={category.id} value={category.id}>{category.label}</option>)}</select></label><label>宽度<input type="range" min="60" max="520" value={selected.width} onChange={(e) => updateItem(selected.id, { width: Number(e.target.value) })} /></label><label>高度<input type="range" min="60" max="520" value={selected.height} onChange={(e) => updateItem(selected.id, { height: Number(e.target.value) })} /></label><label>旋转<input type="range" min="-180" max="180" value={selected.rotation} onChange={(e) => updateItem(selected.id, { rotation: Number(e.target.value) })} /></label><div className="row-actions"><button onClick={() => updateItem(selected.id, { rotation: 0 })}><RotateCcw size={16} />重置旋转</button><button className="danger" onClick={() => removeItem(selected.id)}><Trash2 size={16} />删除</button></div></div>}
-      {selected && <div className="panel"><div className="panel-title">图层 / 对齐</div><div className="row-actions"><button onClick={() => sendBackward()}><ChevronDown size={16} />下移</button><button onClick={() => bringForward()}><ChevronUp size={16} />上移</button></div><div className="row-actions" style={{ marginTop: 10 }}><button onClick={() => shiftSelected(-10, 0)}>←</button><button onClick={() => alignCenter()}><AlignCenter size={16} />居中</button><button onClick={() => shiftSelected(10, 0)}>→</button></div><div className="row-actions" style={{ marginTop: 10 }}><button onClick={() => shiftSelected(0, -10)}>↑</button><button onClick={() => shiftSelected(0, 10)}>↓</button></div></div>}
+      {templateId === 'clean' && <div className="panel"><div className="panel-title">画布编辑</div><div className="canvas-edit-row"><label className="toggle-row"><input type="checkbox" checked={deltaSearchEnabled} onChange={(e) => setDeltaSearchEnabled(e.target.checked)} />启用🔍动画</label><label className="toggle-row">🔍默认时长<input className="rank-size-input" style={{ width: 86 }} type="number" min="0.5" step="0.1" value={deltaSearchDefaultDuration} onChange={(e) => setDeltaSearchDefaultDuration(e.target.value)} /></label></div></div>}
+      {selected && <div className="panel"><div className="panel-title">当前选中图片</div><label>等级<select value={selected.categoryId || ''} onChange={(e) => moveSelectedToCategory(selected.id, e.target.value)}><option value="">无</option>{rankCategories.map((category) => <option key={category.id} value={category.id}>{category.label}</option>)}</select></label><div className="row-actions"><button className="danger" onClick={() => removeItem(selected.id)}><Trash2 size={16} />删除</button></div></div>}
       <div className="panel hint"><div className="panel-title">说明</div><p>1. 选择模板</p><p>2. 可以直接导入本地图片或整个文件夹</p><p>3. 在画布里拖动、缩放、旋转</p><p>4. 不上传服务器，全部只在本地浏览器里处理</p></div>
       {contextMenu && (() => { const current = library.find((item) => item.sourceId === contextMenu.sourceId)?.animationDuration ?? 3; const isActive = (v: number) => Math.abs(current - v) < 1e-9; return <div className="context-menu" style={{ left: contextMenu.x, top: contextMenu.y }} onClick={(e) => e.stopPropagation()}><button className={isActive(1) ? 'active' : ''} onClick={() => applyLibraryDuration(contextMenu.sourceId, 1)}>1 秒</button><button className={isActive(3) ? 'active' : ''} onClick={() => applyLibraryDuration(contextMenu.sourceId, 3)}>3 秒</button><button className={isActive(5) ? 'active' : ''} onClick={() => applyLibraryDuration(contextMenu.sourceId, 5)}>5 秒</button><button className={isActive(8) ? 'active' : ''} onClick={() => applyLibraryDuration(contextMenu.sourceId, 8)}>8 秒</button><div className="context-menu-input-row"><input value={customDurationInput} onChange={(e) => setCustomDurationInput(e.target.value)} placeholder="填写秒数" /><button onClick={() => { const seconds = Number(customDurationInput); if (!Number.isFinite(seconds) || seconds <= 0) return; applyLibraryDuration(contextMenu.sourceId, seconds) }}>确定</button></div></div> })()}
     </aside>
