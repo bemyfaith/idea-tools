@@ -180,8 +180,8 @@ function App() {
     setTemplateState((prev) => ({ ...prev, [templateId]: { ...prev[templateId], items: [...prev[templateId].items, nextItem] } }))
     scheduleReveal(nextItem.id)
   }
-  const relayoutCategory = (categoryId: string) => {
-    const categoryItems = items.filter((item) => item.categoryId === categoryId)
+  const relayoutCategory = (categoryId: string, movedItemId?: string) => {
+    const categoryItems = items.filter((item) => item.categoryId === categoryId || item.id === movedItemId)
     const stageWidth = stageRef.current?.getBoundingClientRect().width ?? 1200
     const stageHeight = stageRef.current?.getBoundingClientRect().height ?? 640
     const idx = rankCategories.findIndex((category) => category.id === categoryId)
@@ -198,12 +198,15 @@ function App() {
   }
 
   const moveSelectedToCategory = (itemId: string, nextCategoryId: string) => {
-    if (!nextCategoryId) return
+    if (!nextCategoryId) {
+      updateItem(itemId, { categoryId: '', width: 180, height: 180 })
+      return
+    }
     const item = items.find((i) => i.id === itemId)
     if (!item) return
     const startEl = document.querySelector(`[data-item-id="${itemId}"]`) as HTMLElement | null
     const stageBox = stageRef.current?.getBoundingClientRect()
-    const nextLayout = relayoutCategory(nextCategoryId)
+    const nextLayout = relayoutCategory(nextCategoryId, itemId)
     const target = nextLayout.find((it) => it.id === itemId)
     if (!target) return
     setTemplateState((prev) => ({
