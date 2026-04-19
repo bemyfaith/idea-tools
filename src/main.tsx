@@ -132,9 +132,9 @@ function App() {
     return 'green'
   }
 
-  const playSearchSound = async (seconds: number) => {
-    if (!deltaSearchEnabled || seconds <= 0) return
-    const band = getSoundBand(seconds)
+  const playSearchSound = async (animationSeconds: number) => {
+    if (!deltaSearchEnabled || animationSeconds <= 0) return
+    const band = getSoundBand(animationSeconds)
     const audio = new Audio(SOUND_FILES[band])
     audio.preload = 'auto'
     try {
@@ -144,12 +144,18 @@ function App() {
         audio.addEventListener('loadedmetadata', onLoaded, { once: true })
         audio.addEventListener('error', onError, { once: true })
       })
-      const duration = audio.duration || 0
-      if (duration > 0 && duration > seconds) {
-        audio.currentTime = Math.max(0, duration - seconds)
-      }
-      await audio.play()
-      window.setTimeout(() => { audio.pause(); audio.currentTime = 0 }, seconds * 1000)
+      const audioDuration = audio.duration || 0
+      const startDelay = Math.max(0, animationSeconds - audioDuration)
+      const startOffset = Math.max(0, audioDuration - animationSeconds)
+      if (startOffset > 0) audio.currentTime = startOffset
+      window.setTimeout(async () => {
+        try {
+          await audio.play()
+        } catch {
+          // ignore audio failures
+        }
+      }, startDelay * 1000)
+      window.setTimeout(() => { audio.pause(); audio.currentTime = 0 }, animationSeconds * 1000)
     } catch {
       // ignore audio failures
     }
