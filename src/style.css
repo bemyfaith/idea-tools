@@ -33,6 +33,11 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .rank-color-input { width: 34px; height: 34px; padding: 0; border: 0; background: transparent; border-radius: 0; overflow: hidden; }
 .canvas-edit-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 14px; align-items: center; }
 .canvas-edit-row .toggle-row { display: flex; align-items: center; gap: 10px; min-height: 38px; color: #edf2ff; font-size: 13px; }
+.settings-stack { display: grid; gap: 10px; }
+.setting-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; }
+.setting-label { display: inline-flex; align-items: center; gap: 10px; color: #edf2ff; font-size: 13px; font-weight: 600; }
+.setting-inline { display: inline-flex; align-items: center; gap: 8px; }
+.setting-inline span { color: #94a5c8; font-size: 13px; }
 .canvas-background-wrap { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .canvas-background-label { font-size: 13px; color: #cbd8ff; white-space: nowrap; }
 .canvas-background-input { width: 54px; height: 42px; padding: 0; border: 1px solid rgba(255,255,255,0.18); background: #ffffff; border-radius: 0; overflow: hidden; appearance: none; -webkit-appearance: none; }
