@@ -144,8 +144,10 @@ function App() {
         audio.addEventListener('loadedmetadata', onLoaded, { once: true })
         audio.addEventListener('error', onError, { once: true })
       })
-      const duration = audio.duration || seconds
-      if (duration > 0) audio.playbackRate = Math.max(0.1, duration / seconds)
+      const duration = audio.duration || 0
+      if (duration > 0 && duration > seconds) {
+        audio.currentTime = Math.max(0, duration - seconds)
+      }
       await audio.play()
       window.setTimeout(() => { audio.pause(); audio.currentTime = 0 }, seconds * 1000)
     } catch {
