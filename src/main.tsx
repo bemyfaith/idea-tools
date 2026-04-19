@@ -122,6 +122,7 @@ function App() {
     if (!item || !stageBox) return
     const width = Math.min(340, stageBox.width * 0.28)
     const height = width
+    const currentDuration = templateState[templateId].library.find((entry) => entry.sourceId === sourceId)?.animationDuration ?? 3
     const nextItem = createCanvasItem({
       name: item.name,
       src: item.src,
@@ -133,7 +134,7 @@ function App() {
       categoryId: '',
       sourceId: item.sourceId,
       isPreview: true,
-      animationDuration: item.animationDuration ?? 3,
+      animationDuration: currentDuration,
     }, 'searching')
     setTemplateState((prev) => ({
       ...prev,
@@ -148,6 +149,7 @@ function App() {
       [templateId]: {
         ...prev[templateId],
         library: prev[templateId].library.map((item) => item.sourceId === sourceId ? { ...item, animationDuration: duration } : item),
+        items: prev[templateId].items.map((item) => item.sourceId === sourceId ? { ...item, animationDuration: duration } : item),
       },
     }))
     setCustomDurationInput('')
@@ -227,24 +229,31 @@ function App() {
     const nextLayout = relayoutCategory(nextCategoryId, itemId)
     const target = nextLayout.find((it) => it.id === itemId)
     if (!target) return
-    setTemplateState((prev) => ({
-      ...prev,
-      [templateId]: {
-        ...prev[templateId],
-        items: prev[templateId].items.map((it) => {
-          const layout = nextLayout.find((l) => l.id === it.id)
-          return layout ? { ...it, categoryId: layout.categoryId, x: layout.x, y: layout.y, width: layout.width, height: layout.height, isPreview: false } : it
-        }),
-      },
-    }))
+    const applyLayout = () => {
+      setTemplateState((prev) => ({
+        ...prev,
+        [templateId]: {
+          ...prev[templateId],
+          items: prev[templateId].items.map((it) => {
+            const layout = nextLayout.find((l) => l.id === it.id)
+            return layout ? { ...it, categoryId: layout.categoryId, x: layout.x, y: layout.y, width: layout.width, height: layout.height, isPreview: false } : it
+          }),
+        },
+      }))
+    }
     if (startEl && stageBox) {
       const from = startEl.getBoundingClientRect()
       setFlyingToLayer({ itemId, src: item.src, x: from.left, y: from.top, w: from.width, h: from.height })
       requestAnimationFrame(() => {
         setFlyingToLayer((prev) => prev ? { ...prev, x: stageBox.left + target.x, y: stageBox.top + target.y, w: target.width, h: target.height } : prev)
       })
-      window.setTimeout(() => setFlyingToLayer(null), 320)
+      window.setTimeout(() => {
+        setFlyingToLayer(null)
+        applyLayout()
+      }, 320)
+      return
     }
+    applyLayout()
   }
 
   const returnToLibrary = (itemId: string) => {
