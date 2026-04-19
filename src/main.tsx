@@ -8,7 +8,7 @@ import './style.css'
 type RankCategory = { id: string; label: string; color: string; textColor: string; textSize: number; track: string }
 type TemplateId = 'video' | 'clean'
 type Template = { id: TemplateId; name: string; description: string; stageClass: string; railClass: string; itemClass: string; defaultPositions: Array<{ x: number; y: number }>; showRightDividers: boolean }
-type CanvasItem = { id: string; name: string; src: string; x: number; y: number; width: number; height: number; rotation: number; categoryId: string; sourceId: string; revealState: 'searching' | 'revealed' }
+type CanvasItem = { id: string; name: string; src: string; x: number; y: number; width: number; height: number; rotation: number; categoryId: string; sourceId: string; revealState: 'searching' | 'revealed'; isPreview?: boolean }
 type TemplateState = { library: CanvasItem[]; items: CanvasItem[] }
 
 const INITIAL_RANK_CATEGORIES_VIDEO: RankCategory[] = [
@@ -68,6 +68,7 @@ function App() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [flyingBack, setFlyingBack] = useState<{ itemId: string; src: string; x: number; y: number; w: number; h: number } | null>(null)
+  const [flyingToLayer, setFlyingToLayer] = useState<{ itemId: string; src: string; x: number; y: number; w: number; h: number } | null>(null)
   const revealTimersRef = useRef<number[]>([])
   const stageRef = useRef<HTMLDivElement | null>(null)
   const libraryRef = useRef<HTMLDivElement | null>(null)
@@ -103,7 +104,31 @@ function App() {
 
   const makeLibraryItem = (fileName: string, src: string, posIndex: number) => {
     const pos = template.defaultPositions[posIndex % template.defaultPositions.length]
-    return createCanvasItem({ name: fileName, src, x: pos.x, y: pos.y, width: 180, height: 180, rotation: 0, categoryId: rankCategories[posIndex % rankCategories.length].id, sourceId: uid() })
+    return createCanvasItem({ name: fileName, src, x: pos.x, y: pos.y, width: 180, height: 180, rotation: 0, categoryId: rankCategories[posIndex % rankCategories.length].id, sourceId: uid(), isPreview: false })
+  }
+
+  const previewLibraryItem = (item: CanvasItem) => {
+    const stageBox = stageRef.current?.getBoundingClientRect()
+    if (!stageBox) return
+    const width = Math.min(340, stageBox.width * 0.28)
+    const height = width
+    const nextItem = createCanvasItem({
+      name: item.name,
+      src: item.src,
+      x: (stageBox.width - width) / 2,
+      y: (stageBox.height - height) / 2 - 30,
+      width,
+      height,
+      rotation: 0,
+      categoryId: item.categoryId,
+      sourceId: item.sourceId,
+      isPreview: true,
+    }, 'revealed')
+    setTemplateState((prev) => ({
+      ...prev,
+      [templateId]: { ...prev[templateId], items: [...prev[templateId].items, nextItem] },
+    }))
+    setSelectedId(nextItem.id)
   }
 
   const addFiles = async (files: FileList | File[]) => {
@@ -134,6 +159,11 @@ function App() {
   const onUpload = (e: React.ChangeEvent<HTMLInputElement>) => { if (e.target.files) addFiles(e.target.files); e.target.value = '' }
   const removeItem = (id: string) => { setTemplateState((prev) => ({ ...prev, [templateId]: { ...prev[templateId], items: prev[templateId].items.filter((item) => item.id !== id) } })); if (selectedId === id) setSelectedId(null) }
   const updateItem = (id: string, patch: Partial<CanvasItem>) => setTemplateState((prev) => ({ ...prev, [templateId]: { ...prev[templateId], items: prev[templateId].items.map((item) => (item.id === id ? { ...item, ...patch } : item)) } }))
+  const getCategoryTarget = (categoryId: string, width: number, height: number) => {
+    const idx = rankCategories.findIndex((category) => category.id === categoryId)
+    const rowHeight = (stageRef.current?.getBoundingClientRect().height ?? 640) / Math.max(rankCategories.length, 1)
+    return { x: 230, y: idx * rowHeight + (rowHeight - height) / 2 }
+  }
   const placeItem = (sourceId: string, x?: number, y?: number) => {
     const item = library.find((i) => i.sourceId === sourceId)
     if (!item) return
@@ -142,6 +172,27 @@ function App() {
     setTemplateState((prev) => ({ ...prev, [templateId]: { ...prev[templateId], items: [...prev[templateId].items, nextItem] } }))
     scheduleReveal(nextItem.id)
   }
+  const moveSelectedToCategory = (itemId: string, nextCategoryId: string) => {
+    const item = items.find((i) => i.id === itemId)
+    if (!item) return
+    const startEl = document.querySelector(`[data-item-id="${itemId}"]`) as HTMLElement | null
+    const stageBox = stageRef.current?.getBoundingClientRect()
+    const target = getCategoryTarget(nextCategoryId, item.width, item.height)
+    if (startEl && stageBox) {
+      const from = startEl.getBoundingClientRect()
+      setFlyingToLayer({ itemId, src: item.src, x: from.left, y: from.top, w: from.width, h: from.height })
+      requestAnimationFrame(() => {
+        setFlyingToLayer((prev) => prev ? { ...prev, x: stageBox.left + target.x, y: stageBox.top + target.y, w: Math.max(120, item.width * 0.55), h: Math.max(120, item.height * 0.55) } : prev)
+      })
+      window.setTimeout(() => {
+        updateItem(itemId, { categoryId: nextCategoryId, x: target.x, y: target.y, width: Math.max(120, item.width * 0.55), height: Math.max(120, item.height * 0.55), isPreview: false })
+        setFlyingToLayer(null)
+      }, 300)
+      return
+    }
+    updateItem(itemId, { categoryId: nextCategoryId, x: target.x, y: target.y, width: Math.max(120, item.width * 0.55), height: Math.max(120, item.height * 0.55), isPreview: false })
+  }
+
   const returnToLibrary = (itemId: string) => {
     const item = items.find((i) => i.id === itemId)
     if (!item) return
@@ -225,11 +276,11 @@ function App() {
           </div>
         ))}
       </div>
-      {selected && <div className="panel"><div className="panel-title">属性面板</div><label>分层<select value={selected.categoryId} onChange={(e) => updateItem(selected.id, { categoryId: e.target.value })}>{rankCategories.map((category) => <option key={category.id} value={category.id}>{category.label}</option>)}</select></label><label>宽度<input type="range" min="60" max="520" value={selected.width} onChange={(e) => updateItem(selected.id, { width: Number(e.target.value) })} /></label><label>高度<input type="range" min="60" max="520" value={selected.height} onChange={(e) => updateItem(selected.id, { height: Number(e.target.value) })} /></label><label>旋转<input type="range" min="-180" max="180" value={selected.rotation} onChange={(e) => updateItem(selected.id, { rotation: Number(e.target.value) })} /></label><div className="row-actions"><button onClick={() => updateItem(selected.id, { rotation: 0 })}><RotateCcw size={16} />重置旋转</button><button className="danger" onClick={() => removeItem(selected.id)}><Trash2 size={16} />删除</button></div></div>}
+      {selected && <div className="panel"><div className="panel-title">属性面板</div><label>分层<select value={selected.categoryId} onChange={(e) => moveSelectedToCategory(selected.id, e.target.value)}>{rankCategories.map((category) => <option key={category.id} value={category.id}>{category.label}</option>)}</select></label><label>宽度<input type="range" min="60" max="520" value={selected.width} onChange={(e) => updateItem(selected.id, { width: Number(e.target.value) })} /></label><label>高度<input type="range" min="60" max="520" value={selected.height} onChange={(e) => updateItem(selected.id, { height: Number(e.target.value) })} /></label><label>旋转<input type="range" min="-180" max="180" value={selected.rotation} onChange={(e) => updateItem(selected.id, { rotation: Number(e.target.value) })} /></label><div className="row-actions"><button onClick={() => updateItem(selected.id, { rotation: 0 })}><RotateCcw size={16} />重置旋转</button><button className="danger" onClick={() => removeItem(selected.id)}><Trash2 size={16} />删除</button></div></div>}
       {selected && <div className="panel"><div className="panel-title">图层 / 对齐</div><div className="row-actions"><button onClick={() => sendBackward()}><ChevronDown size={16} />下移</button><button onClick={() => bringForward()}><ChevronUp size={16} />上移</button></div><div className="row-actions" style={{ marginTop: 10 }}><button onClick={() => shiftSelected(-10, 0)}>←</button><button onClick={() => alignCenter()}><AlignCenter size={16} />居中</button><button onClick={() => shiftSelected(10, 0)}>→</button></div><div className="row-actions" style={{ marginTop: 10 }}><button onClick={() => shiftSelected(0, -10)}>↑</button><button onClick={() => shiftSelected(0, 10)}>↓</button></div></div>}
       <div className="panel hint"><div className="panel-title">说明</div><p>1. 选择模板</p><p>2. 可以直接导入本地图片或整个文件夹</p><p>3. 在画布里拖动、缩放、旋转</p><p>4. 不上传服务器，全部只在本地浏览器里处理</p></div>
     </aside>
-    <main className="workspace"><div className="toolbar"><div className="toolbar-left"><Move size={16} />当前模板：{template.name}</div><button className="primary" disabled={loading} onClick={exportPng}><Download size={16} />{loading ? '导出中...' : '导出 PNG'}</button></div><div className="stage-wrap"><div ref={stageRef} className={`stage ${template.stageClass}`} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); const sid = e.dataTransfer.getData('text/plain'); if (sid) { placeItem(sid); return } if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files) }}><div className={`stage-rank-rail ${template.railClass}`}><div className="stage-rank-title-col">{rankCategories.map((category) => <div key={category.id} className="stage-rank-title" style={{ background: category.track, color: category.textColor, fontSize: `${category.textSize}px` }}>{category.label}</div>)}</div><div className={`stage-rank-grid ${template.showRightDividers ? '' : 'no-dividers'}`}>{rankCategories.map((category) => <div key={category.id} className="stage-rank-row" style={{ borderBottomColor: category.track }}><div className="stage-rank-area" style={{ background: canvasBackgroundColor }} /></div>)}</div></div>{items.map((item) => <Rnd key={item.id} size={{ width: item.width, height: item.height }} position={{ x: item.x, y: item.y }} onDragStop={(_, data) => { if (isOverLibrary(data.x, data.y, item.width, item.height)) { returnToLibrary(item.id); return } updateItem(item.id, { x: data.x, y: data.y }) }} onResizeStop={(_, __, ref, ___, position) => { updateItem(item.id, { width: ref.offsetWidth, height: ref.offsetHeight, ...position }) }} onMouseDown={() => setSelectedId(item.id)} data-item-id={item.id} className={`item ${template.itemClass} ${selectedId === item.id ? 'selected' : ''} ${templateId === 'clean' && item.revealState === 'searching' ? 'item-searching' : 'item-revealed'}`}><div className="item-frame" style={{ transform: `rotate(${item.rotation}deg)` }}><img src={item.src} alt={item.name} draggable={false} />{templateId === 'clean' && <div className="item-search-overlay" aria-hidden="true"><div className="item-search-stripes" /><div className="item-search-magnifier"><div className="item-search-glass" /><div className="item-search-handle" /></div></div>}</div></Rnd>)}{flyingBack && <div className="flying-back" style={{ left: flyingBack.x, top: flyingBack.y, width: flyingBack.w, height: flyingBack.h }}><img src={flyingBack.src} alt="moving" /></div>}</div><div ref={libraryRef} className="library-panel"><div className="panel-title">素材库</div>{available.length === 0 ? <div className="empty">把图片导入到这里。</div> : <div className="asset-list asset-grid">{available.map((item) => <button key={item.sourceId} className="asset-card asset-card-image" draggable onDragStart={(e) => { e.dataTransfer.setData('text/plain', item.sourceId) }}><img src={item.src} alt={item.name} /></button>)}</div>}</div></div></main></div>
+    <main className="workspace"><div className="toolbar"><div className="toolbar-left"><Move size={16} />当前模板：{template.name}</div><button className="primary" disabled={loading} onClick={exportPng}><Download size={16} />{loading ? '导出中...' : '导出 PNG'}</button></div><div className="stage-wrap"><div ref={stageRef} className={`stage ${template.stageClass}`} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); const sid = e.dataTransfer.getData('text/plain'); if (sid) { placeItem(sid); return } if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files) }}><div className={`stage-rank-rail ${template.railClass}`}><div className="stage-rank-title-col">{rankCategories.map((category) => <div key={category.id} className="stage-rank-title" style={{ background: category.track, color: category.textColor, fontSize: `${category.textSize}px` }}>{category.label}</div>)}</div><div className={`stage-rank-grid ${template.showRightDividers ? '' : 'no-dividers'}`}>{rankCategories.map((category) => <div key={category.id} className="stage-rank-row" style={{ borderBottomColor: category.track }}><div className="stage-rank-area" style={{ background: canvasBackgroundColor }} /></div>)}</div></div>{items.map((item) => <Rnd key={item.id} size={{ width: item.width, height: item.height }} position={{ x: item.x, y: item.y }} onDragStop={(_, data) => { if (isOverLibrary(data.x, data.y, item.width, item.height)) { returnToLibrary(item.id); return } updateItem(item.id, { x: data.x, y: data.y }) }} onResizeStop={(_, __, ref, ___, position) => { updateItem(item.id, { width: ref.offsetWidth, height: ref.offsetHeight, ...position }) }} onMouseDown={() => setSelectedId(item.id)} data-item-id={item.id} className={`item ${template.itemClass} ${selectedId === item.id ? 'selected' : ''} ${templateId === 'clean' && item.revealState === 'searching' ? 'item-searching' : 'item-revealed'} ${item.isPreview ? 'item-preview' : ''}`}><div className="item-frame" style={{ transform: `rotate(${item.rotation}deg)` }}><img src={item.src} alt={item.name} draggable={false} />{templateId === 'clean' && <div className="item-search-overlay" aria-hidden="true"><div className="item-search-stripes" /><div className="item-search-magnifier"><div className="item-search-glass" /><div className="item-search-handle" /></div></div>}</div></Rnd>)}{flyingBack && <div className="flying-back" style={{ left: flyingBack.x, top: flyingBack.y, width: flyingBack.w, height: flyingBack.h }}><img src={flyingBack.src} alt="moving" /></div>}{flyingToLayer && <div className="flying-back flying-to-layer" style={{ left: flyingToLayer.x, top: flyingToLayer.y, width: flyingToLayer.w, height: flyingToLayer.h }}><img src={flyingToLayer.src} alt="moving to layer" /></div>}</div><div ref={libraryRef} className="library-panel"><div className="panel-title">素材库</div>{available.length === 0 ? <div className="empty">把图片导入到这里。</div> : <div className="asset-list asset-grid">{available.map((item) => <button key={item.sourceId} className="asset-card asset-card-image" draggable onClick={() => previewLibraryItem(item)} onDragStart={(e) => { e.dataTransfer.setData('text/plain', item.sourceId) }}><img src={item.src} alt={item.name} /></button>)}</div>}</div></div></main></div>
 
 }
 
