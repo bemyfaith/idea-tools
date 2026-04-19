@@ -36,7 +36,7 @@ const SEARCH_REVEAL_MS = 2600
 const RANK_RAIL_WIDTH = 141
 const RANK_ROW_PADDING = 14
 const HORIZONTAL_STAGGER = 0
-const ROW_START_X = 12
+const ROW_START_X = 160
 const ROW_GAP = 10
 
 const createCanvasItem = (item: Omit<CanvasItem, 'id' | 'revealState'>, revealState: CanvasItem['revealState'] = 'searching'): CanvasItem => ({
