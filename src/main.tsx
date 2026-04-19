@@ -109,7 +109,7 @@ function App() {
 
   const makeLibraryItem = (fileName: string, src: string, posIndex: number) => {
     const pos = template.defaultPositions[posIndex % template.defaultPositions.length]
-    return createCanvasItem({ name: fileName, src, x: pos.x, y: pos.y, width: 180, height: 180, rotation: 0, categoryId: rankCategories[posIndex % rankCategories.length].id, sourceId: uid(), isPreview: false })
+    return createCanvasItem({ name: fileName, src, x: pos.x, y: pos.y, width: 180, height: 180, rotation: 0, categoryId: '', sourceId: uid(), isPreview: false })
   }
 
   const previewLibraryItem = (item: CanvasItem) => {
@@ -125,7 +125,7 @@ function App() {
       width,
       height,
       rotation: 0,
-      categoryId: item.categoryId,
+      categoryId: '',
       sourceId: item.sourceId,
       isPreview: true,
     }, 'searching')
@@ -176,7 +176,7 @@ function App() {
     const item = library.find((i) => i.sourceId === sourceId)
     if (!item) return
     setTemplateState((prev) => ({ ...prev, [templateId]: { ...prev[templateId], library: prev[templateId].library.filter((i) => i.sourceId !== sourceId) } }))
-    const nextItem = { ...item, id: uid(), x: x ?? 180, y: y ?? 40, revealState: 'searching' as const }
+    const nextItem = { ...item, id: uid(), x: x ?? 180, y: y ?? 40, categoryId: '', revealState: 'searching' as const }
     setTemplateState((prev) => ({ ...prev, [templateId]: { ...prev[templateId], items: [...prev[templateId].items, nextItem] } }))
     scheduleReveal(nextItem.id)
   }
@@ -198,6 +198,7 @@ function App() {
   }
 
   const moveSelectedToCategory = (itemId: string, nextCategoryId: string) => {
+    if (!nextCategoryId) return
     const item = items.find((i) => i.id === itemId)
     if (!item) return
     const startEl = document.querySelector(`[data-item-id="${itemId}"]`) as HTMLElement | null
@@ -321,7 +322,7 @@ function App() {
           </div>
         ))}
       </div>
-      {selected && <div className="panel"><div className="panel-title">属性面板</div><label>分层<select value={selected.categoryId} onChange={(e) => moveSelectedToCategory(selected.id, e.target.value)}>{rankCategories.map((category) => <option key={category.id} value={category.id}>{category.label}</option>)}</select></label><label>宽度<input type="range" min="60" max="520" value={selected.width} onChange={(e) => updateItem(selected.id, { width: Number(e.target.value) })} /></label><label>高度<input type="range" min="60" max="520" value={selected.height} onChange={(e) => updateItem(selected.id, { height: Number(e.target.value) })} /></label><label>旋转<input type="range" min="-180" max="180" value={selected.rotation} onChange={(e) => updateItem(selected.id, { rotation: Number(e.target.value) })} /></label><div className="row-actions"><button onClick={() => updateItem(selected.id, { rotation: 0 })}><RotateCcw size={16} />重置旋转</button><button className="danger" onClick={() => removeItem(selected.id)}><Trash2 size={16} />删除</button></div></div>}
+      {selected && <div className="panel"><div className="panel-title">属性面板</div><label>分层<select value={selected.categoryId || ''} onChange={(e) => moveSelectedToCategory(selected.id, e.target.value)}><option value="">无</option>{rankCategories.map((category) => <option key={category.id} value={category.id}>{category.label}</option>)}</select></label><label>宽度<input type="range" min="60" max="520" value={selected.width} onChange={(e) => updateItem(selected.id, { width: Number(e.target.value) })} /></label><label>高度<input type="range" min="60" max="520" value={selected.height} onChange={(e) => updateItem(selected.id, { height: Number(e.target.value) })} /></label><label>旋转<input type="range" min="-180" max="180" value={selected.rotation} onChange={(e) => updateItem(selected.id, { rotation: Number(e.target.value) })} /></label><div className="row-actions"><button onClick={() => updateItem(selected.id, { rotation: 0 })}><RotateCcw size={16} />重置旋转</button><button className="danger" onClick={() => removeItem(selected.id)}><Trash2 size={16} />删除</button></div></div>}
       {selected && <div className="panel"><div className="panel-title">图层 / 对齐</div><div className="row-actions"><button onClick={() => sendBackward()}><ChevronDown size={16} />下移</button><button onClick={() => bringForward()}><ChevronUp size={16} />上移</button></div><div className="row-actions" style={{ marginTop: 10 }}><button onClick={() => shiftSelected(-10, 0)}>←</button><button onClick={() => alignCenter()}><AlignCenter size={16} />居中</button><button onClick={() => shiftSelected(10, 0)}>→</button></div><div className="row-actions" style={{ marginTop: 10 }}><button onClick={() => shiftSelected(0, -10)}>↑</button><button onClick={() => shiftSelected(0, 10)}>↓</button></div></div>}
       <div className="panel hint"><div className="panel-title">说明</div><p>1. 选择模板</p><p>2. 可以直接导入本地图片或整个文件夹</p><p>3. 在画布里拖动、缩放、旋转</p><p>4. 不上传服务器，全部只在本地浏览器里处理</p></div>
     </aside>
