@@ -145,7 +145,7 @@ function App() {
         audio.addEventListener('error', onError, { once: true })
       })
       const audioDuration = audio.duration || 0
-      const endOffset = 0.3
+      const endOffset = 0.5
       const targetEnd = animationSeconds + endOffset
       const startDelay = Math.max(0, targetEnd - audioDuration)
       const startOffset = Math.max(0, audioDuration - targetEnd)
