@@ -185,11 +185,12 @@ function App() {
     const startEl = document.querySelector(`[data-item-id="${itemId}"]`) as HTMLElement | null
     const stageBox = stageRef.current?.getBoundingClientRect()
     const targetBase = getCategoryTarget(nextCategoryId, item.width, item.height)
-    const gap = 16
-    const targetX = targetBase.x + sameCategoryItems.length * (targetBase.width + 12)
-    const targetY = targetBase.y
-    const width = targetBase.width
+    const gap = 12
+    const baseWidth = targetBase.width
+    const width = Math.max(120, baseWidth - sameCategoryItems.length * 10)
     const height = targetBase.height
+    const targetX = targetBase.x + sameCategoryItems.length * Math.max(36, width * 0.55)
+    const targetY = targetBase.y
     if (startEl && stageBox) {
       const from = startEl.getBoundingClientRect()
       setFlyingToLayer({ itemId, src: item.src, x: from.left, y: from.top, w: from.width, h: from.height })
