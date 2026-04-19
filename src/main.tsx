@@ -4,6 +4,7 @@ import { Download, ImagePlus, Move, RotateCcw, LayoutTemplate, AlignCenter, Tras
 import { Rnd } from 'react-rnd'
 import { toPng } from 'html-to-image'
 import './style.css'
+import { SOUND_FILES } from './sound_data'
 
 type RankCategory = { id: string; label: string; color: string; textColor: string; textSize: number; track: string }
 type TemplateId = 'video' | 'clean'
@@ -39,12 +40,6 @@ const HORIZONTAL_STAGGER = 0
 const ROW_START_X = 160
 const ROW_GAP = 10
 
-
-const SOUND_FILES = {
-  redgold: '/@fs/Users/xulanjing/.openclaw/workspace/红金.mp3',
-  purpleblue: '/@fs/Users/xulanjing/.openclaw/workspace/紫蓝.mp3',
-  green: '/@fs/Users/xulanjing/.openclaw/workspace/绿.mp3',
-} as const
 
 type SoundBand = 'redgold' | 'purpleblue' | 'green'
 
