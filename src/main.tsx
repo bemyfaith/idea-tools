@@ -180,7 +180,7 @@ function App() {
     setTemplateState((prev) => ({ ...prev, [templateId]: { ...prev[templateId], items: [...prev[templateId].items, nextItem] } }))
     scheduleReveal(nextItem.id)
   }
-  const relayoutCategory = (categoryId: string, movedItemId?: string) => {
+  const relayoutCategory = (categoryId: string) => {
     const categoryItems = items.filter((item) => item.categoryId === categoryId)
     const stageWidth = stageRef.current?.getBoundingClientRect().width ?? 1200
     const stageHeight = stageRef.current?.getBoundingClientRect().height ?? 640
@@ -202,7 +202,7 @@ function App() {
     if (!item) return
     const startEl = document.querySelector(`[data-item-id="${itemId}"]`) as HTMLElement | null
     const stageBox = stageRef.current?.getBoundingClientRect()
-    const nextLayout = relayoutCategory(nextCategoryId, itemId)
+    const nextLayout = relayoutCategory(nextCategoryId)
     const target = nextLayout.find((it) => it.id === itemId)
     if (!target) return
     if (startEl && stageBox) {
