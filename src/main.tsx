@@ -71,7 +71,7 @@ function App() {
   const [templateId, setTemplateId] = useState<TemplateId>('video')
   const [canvasBackgroundColor, setCanvasBackgroundColor] = useState('#191c1f')
   const [deltaSearchEnabled, setDeltaSearchEnabled] = useState(true)
-  const [deltaSearchDefaultDuration, setDeltaSearchDefaultDuration] = useState('3')
+  const [deltaSearchDefaultDuration, setDeltaSearchDefaultDuration] = useState('2')
   const [soundSettings, setSoundSettings] = useState({ redgoldMin: '3', purpleblueMin: '1', greenMax: '1' })
   const [templateState, setTemplateState] = useState<Record<TemplateId, TemplateState>>({
     clean: { library: [], items: [] },
@@ -128,7 +128,7 @@ function App() {
     const greenMax = Number(soundSettings.greenMax) || 1
     const redgoldMin = Number(soundSettings.redgoldMin) || 3
     if (seconds >= redgoldMin) return 'redgold'
-    if (seconds >= greenMax) return 'purpleblue'
+    if (seconds > greenMax) return 'purpleblue'
     return 'green'
   }
 
