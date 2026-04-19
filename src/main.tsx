@@ -145,8 +145,10 @@ function App() {
         audio.addEventListener('error', onError, { once: true })
       })
       const audioDuration = audio.duration || 0
-      const startDelay = Math.max(0, animationSeconds - audioDuration)
-      const startOffset = Math.max(0, audioDuration - animationSeconds)
+      const endOffset = 0.3
+      const targetEnd = Math.max(0, animationSeconds - endOffset)
+      const startDelay = Math.max(0, targetEnd - audioDuration)
+      const startOffset = Math.max(0, audioDuration - targetEnd)
       if (startOffset > 0) audio.currentTime = startOffset
       window.setTimeout(async () => {
         try {
@@ -155,7 +157,7 @@ function App() {
           // ignore audio failures
         }
       }, startDelay * 1000)
-      window.setTimeout(() => { audio.pause(); audio.currentTime = 0 }, animationSeconds * 1000)
+      window.setTimeout(() => { audio.pause(); audio.currentTime = 0 }, targetEnd * 1000)
     } catch {
       // ignore audio failures
     }
