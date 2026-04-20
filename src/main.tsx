@@ -380,7 +380,7 @@ function App() {
 
   return <div className="app-shell">
     <aside className="sidebar">
-      <div className="brand"><div className="brand-badge"><Wrench size={22} strokeWidth={2.2} /></div><div><h1><a href="https://space.bilibili.com/227403410?spm_id_from=333.788.0.0" target="_blank" rel="noreferrer">有所梦_</a>奇思妙想小工具</h1><p>从夯到拉锐评工具教程</p></div></div>
+      <div className="brand"><div className="brand-badge"><Wrench size={22} strokeWidth={2.2} /></div><div><h1>从夯到拉锐评工具</h1><p>使用教程</p><p><a href="https://space.bilibili.com/227403410?spm_id_from=333.788.0.0" target="_blank" rel="noreferrer">有所梦_ B站使用教程</a></p></div></div>
       <div className="import-row">
         <button className="primary" onClick={() => singleInputRef.current?.click()}><ImagePlus size={16} />导入图片</button>
         <button className="primary secondary" onClick={() => folderInputRef.current?.click()}><ImagePlus size={16} />导入文件夹</button>
