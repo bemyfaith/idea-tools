@@ -21,6 +21,7 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .empty, .hint p { color: #95a4c4; font-size: 13px; line-height: 1.6; }
 .template-list, .asset-list { display: grid; gap: 10px; }
 .asset-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.asset-card-image { aspect-ratio: 1 / 1; overflow: hidden; }
 .template-card { width: 100%; padding: 12px; text-align: left; background: rgba(255, 255, 255, 0.05); color: #e8f0ff; }
 .template-card.active { background: rgba(91, 124, 250, 0.22); outline: 1px solid rgba(91, 124, 250, 0.5); }
 .template-card strong, .template-card span { display: block; }
@@ -93,7 +94,6 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .item-no-search .item-search-overlay { display: none; }
 .item-search-overlay, .item-search-overlay::before, .item-search-overlay::after { transition: opacity 180ms ease; }
 .library-panel { width: min(1200px, 100%); margin: 0 auto; border-radius: 0; padding: 18px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-top: 1px solid rgba(255,255,255,0.14); }
-.library-panel .asset-card img { width: 72px; height: 72px; object-fit: cover; border-radius: 14px; }
 .asset-card-image { padding: 0; margin: 0; background: transparent; justify-content: center; border-radius: 0; box-shadow: none; }
 .asset-card-image span, .asset-card-image em { display: none; }
 .library-panel .asset-card-image img { width: 100%; height: 100%; border-radius: 0; display: block; }
