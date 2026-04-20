@@ -13,11 +13,11 @@ type CanvasItem = { id: string; name: string; src: string; x: number; y: number;
 type TemplateState = { library: CanvasItem[]; items: CanvasItem[] }
 
 const INITIAL_RANK_CATEGORIES_VIDEO: RankCategory[] = [
-  { id: 'han', label: '夯', color: '#e63223', textColor: '#ffffff', textSize: 30, track: '#e63223' },
-  { id: 'dingji', label: '顶级', color: '#f3c744', textColor: '#ffffff', textSize: 30, track: '#f3c744' },
-  { id: 'renshangren', label: '人上人', color: '#fffb53', textColor: '#111827', textSize: 30, track: '#fffb53' },
-  { id: 'npc', label: 'npc', color: '#faeed0', textColor: '#111827', textSize: 30, track: '#faeed0' },
-  { id: 'lawanle', label: '拉完了', color: '#ffffff', textColor: '#111827', textSize: 30, track: '#ffffff' },
+  { id: 'han', label: '夯', color: '#e63223', textColor: '#000000', textSize: 30, track: '#e63223' },
+  { id: 'dingji', label: '顶级', color: '#f3c744', textColor: '#000000', textSize: 30, track: '#f3c744' },
+  { id: 'renshangren', label: '人上人', color: '#fffb53', textColor: '#000000', textSize: 30, track: '#fffb53' },
+  { id: 'npc', label: 'npc', color: '#faeed0', textColor: '#000000', textSize: 30, track: '#faeed0' },
+  { id: 'lawanle', label: '拉完了', color: '#ffffff', textColor: '#000000', textSize: 30, track: '#ffffff' },
 ]
 
 const INITIAL_RANK_CATEGORIES_CLEAN: RankCategory[] = [
@@ -69,7 +69,7 @@ function App() {
   const [templates, setTemplates] = useState<Template[]>(INITIAL_TEMPLATES)
   const [rankCategories, setRankCategories] = useState<RankCategory[]>(INITIAL_RANK_CATEGORIES_VIDEO)
   const [templateId, setTemplateId] = useState<TemplateId>('video')
-  const [canvasBackgroundColor, setCanvasBackgroundColor] = useState('#191c1f')
+  const [canvasBackgroundColor, setCanvasBackgroundColor] = useState('#ffffff')
   const [deltaSearchEnabled, setDeltaSearchEnabled] = useState(true)
   const [deltaSearchDefaultDuration, setDeltaSearchDefaultDuration] = useState('2')
   const [soundSettings, setSoundSettings] = useState({ redgoldMin: '3', purpleblueMin: '1', greenMax: '1' })
