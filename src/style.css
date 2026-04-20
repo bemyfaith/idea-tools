@@ -5,7 +5,7 @@ body { background: radial-gradient(circle at top left, rgba(78, 110, 255, 0.25),
 button, input, select { font: inherit; }
 button { border: 0; cursor: pointer; }
 select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.06); color: #edf2ff; padding: 10px 12px; }
-.app-shell { display: grid; grid-template-columns: 320px 1fr; height: 100%; }
+.app-shell { display: grid; grid-template-columns: 280px 1fr; height: 100%; }
 .sidebar { padding: 20px; border-right: 1px solid rgba(255, 255, 255, 0.08); background: rgba(8, 13, 28, 0.86); overflow: auto; }
 .brand { display: flex; gap: 12px; align-items: center; margin-bottom: 18px; }
 .brand-badge { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; font-weight: 800; color: white; background: linear-gradient(135deg, #5b7cfa, #25c2a0); }
@@ -52,7 +52,7 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .toolbar { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); background: rgba(10, 16, 33, 0.7); backdrop-filter: blur(10px); }
 .toolbar-left { display: flex; align-items: center; gap: 8px; color: #d9e4ff; font-weight: 700; }
 .stage-wrap { padding: 24px; overflow: auto; display: grid; gap: 0; align-content: start; }
-.library-panel { width: min(1200px, 100%); margin: 0 auto; border-radius: 24px; padding: 18px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-top: 1px solid rgba(255,255,255,0.14); }
+.library-panel { width: min(1200px, 100%); margin: 0 auto; border-radius: 0; padding: 18px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-top: 1px solid rgba(255,255,255,0.14); }
 .stage { position: relative; width: min(1200px, 100%); min-height: 640px; margin: 0 auto; border-radius: 0; background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)), rgba(7, 11, 24, 0.92); border: 0; overflow: hidden; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35); }
 .stage.template-video { background: linear-gradient(180deg, rgba(17, 24, 39, 1), rgba(7, 11, 24, 1)); opacity: 1; padding-left: 0; }
 .stage.template-clean { background: rgba(255,255,255,1); opacity: 1; color: #111827; }
@@ -89,7 +89,7 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .item-revealed .item-search-overlay { opacity: 0; }
 .item-no-search .item-search-overlay { display: none; }
 .item-search-overlay, .item-search-overlay::before, .item-search-overlay::after { transition: opacity 180ms ease; }
-.library-panel { width: min(1200px, 100%); margin: 0 auto; border-radius: 24px; padding: 18px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-top: 1px solid rgba(255,255,255,0.14); }
+.library-panel { width: min(1200px, 100%); margin: 0 auto; border-radius: 0; padding: 18px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-top: 1px solid rgba(255,255,255,0.14); }
 .library-panel .asset-card img { width: 72px; height: 72px; object-fit: cover; border-radius: 14px; }
 .asset-card-image { padding: 8px; background: rgba(255,255,255,0.05); justify-content: center; }
 .asset-card-image span, .asset-card-image em { display: none; }
