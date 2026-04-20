@@ -4,7 +4,9 @@ html, body, #app { margin: 0; width: 100%; height: 100%; }
 body { background: radial-gradient(circle at top left, rgba(78, 110, 255, 0.25), transparent 30%), radial-gradient(circle at bottom right, rgba(37, 194, 160, 0.16), transparent 28%), #0b1020; }
 button, input, select { font: inherit; }
 button { border: 0; cursor: pointer; }
-select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.06); color: #edf2ff; padding: 10px 12px; }
+select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.14); background: rgba(255, 255, 255, 0.08); color: #ffffff; padding: 10px 12px; }
+select option { background: #101725; color: #ffffff; }
+select:focus, .rank-name-input:focus { outline: 1px solid rgba(125, 235, 207, 0.7); outline-offset: 1px; }
 .home-shell { min-height: 100%; display: grid; place-items: center; padding: 40px 20px; }
 .home-hero { width: min(1040px, 100%); padding: 34px; border-radius: 28px; background: rgba(10, 16, 33, 0.76); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 30px 80px rgba(0,0,0,0.34); backdrop-filter: blur(12px); }
 .home-hero h1 { margin: 0; font-size: clamp(32px, 4vw, 50px); line-height: 1.08; letter-spacing: -0.04em; }
