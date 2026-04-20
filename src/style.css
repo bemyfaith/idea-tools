@@ -26,9 +26,9 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .template-card strong, .template-card span { display: block; }
 .template-card strong { font-size: 13px; }
 .template-card span { color: #94a5c8; font-size: 11px; }
-.rank-edit-row { display: grid; grid-template-columns: 1.6fr 42px 56px 34px; gap: 8px; align-items: center; margin-bottom: 12px; }
+.rank-edit-row { display: grid; grid-template-columns: minmax(0, 1.2fr) 34px 52px 34px; gap: 8px; align-items: center; margin-bottom: 8px; }
 .rank-edit-row:last-child { margin-bottom: 0; }
-.rank-name-input { padding: 10px 12px; min-width: 0; }
+.rank-name-input { padding: 8px 10px; min-width: 0; height: 36px; }
 .rank-text-color-input { width: 34px; height: 34px; padding: 0; border: 0; background: transparent; border-radius: 50%; overflow: hidden; }
 .rank-color-input { width: 34px; height: 34px; padding: 0; border: 0; background: transparent; border-radius: 0; overflow: hidden; }
 .canvas-edit-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 14px; align-items: center; }
@@ -47,9 +47,8 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .rank-color-input::-webkit-color-swatch-wrapper, .rank-text-color-input::-webkit-color-swatch-wrapper { padding: 0; }
 .rank-color-input::-webkit-color-swatch { border: none; border-radius: 0; }
 .rank-text-color-input::-webkit-color-swatch { border: none; border-radius: 50%; }
-.rank-size-input { width: 46px; height: 34px; padding: 0 6px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.06); color: #edf2ff; }
-.rank-edit-row { grid-template-columns: minmax(0, 1fr) 34px 46px 34px; gap: 6px; margin-bottom: 8px; }
-.rank-name-input { padding: 9px 10px; }
+.rank-size-input { width: 52px; height: 36px; padding: 0 6px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.06); color: #edf2ff; text-align: center; }
+
 .workspace { display: grid; grid-template-rows: auto 1fr; min-width: 0; }
 .toolbar { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); background: rgba(10, 16, 33, 0.7); backdrop-filter: blur(10px); }
 .toolbar-left { display: flex; align-items: center; gap: 8px; color: #d9e4ff; font-weight: 700; }
