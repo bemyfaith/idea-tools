@@ -187,7 +187,18 @@ function App() {
       ...prev,
       [templateId]: { ...prev[templateId], items: [...prev[templateId].items, nextItem] },
     }))
-    if (templateId === 'clean') void playSearchSound(currentDuration)
+    if (templateId === 'clean') {
+      void playSearchSound(currentDuration)
+      window.setTimeout(() => {
+        setTemplateState((prev) => ({
+          ...prev,
+          [templateId]: {
+            ...prev[templateId],
+            items: prev[templateId].items.map((item) => item.id === nextItem.id ? { ...item, revealState: 'revealed', isPreview: false } : item),
+          },
+        }))
+      }, currentDuration * 1000)
+    }
     setSelectedId(nextItem.id)
   }
 
