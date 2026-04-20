@@ -27,11 +27,11 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .template-card strong, .template-card span { display: block; }
 .template-card strong { font-size: 13px; }
 .template-card span { color: #94a5c8; font-size: 11px; }
-.rank-edit-row { display: grid; grid-template-columns: minmax(0, 1.2fr) 34px 52px 34px; gap: 8px; align-items: center; margin-bottom: 8px; }
+.rank-edit-row { display: grid; grid-template-columns: minmax(0, 0.95fr) 30px 42px 30px; gap: 6px; align-items: center; margin-bottom: 8px; }
 .rank-edit-row:last-child { margin-bottom: 0; }
-.rank-name-input { padding: 8px 10px; min-width: 0; height: 36px; }
-.rank-text-color-input { width: 34px; height: 34px; padding: 0; border: 0; background: transparent; border-radius: 50%; overflow: hidden; }
-.rank-color-input { width: 34px; height: 34px; padding: 0; border: 0; background: transparent; border-radius: 0; overflow: hidden; }
+.rank-name-input { padding: 7px 9px; min-width: 0; height: 34px; font-size: 12px; }
+.rank-text-color-input { width: 30px; height: 30px; padding: 0; border: 0; background: transparent; border-radius: 50%; overflow: hidden; }
+.rank-color-input { width: 30px; height: 30px; padding: 0; border: 0; background: transparent; border-radius: 0; overflow: hidden; }
 .canvas-edit-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 14px; align-items: center; }
 .canvas-edit-row .toggle-row { display: flex; align-items: center; gap: 10px; min-height: 38px; color: #edf2ff; font-size: 13px; }
 .settings-stack { display: grid; gap: 8px; }
@@ -48,7 +48,7 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .rank-color-input::-webkit-color-swatch-wrapper, .rank-text-color-input::-webkit-color-swatch-wrapper { padding: 0; }
 .rank-color-input::-webkit-color-swatch { border: none; border-radius: 0; }
 .rank-text-color-input::-webkit-color-swatch { border: none; border-radius: 50%; }
-.rank-size-input { width: 52px; height: 36px; padding: 0 6px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.06); color: #edf2ff; text-align: center; }
+.rank-size-input { width: 42px; height: 34px; padding: 0 4px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.06); color: #edf2ff; text-align: center; font-size: 12px; }
 
 .workspace { display: grid; grid-template-rows: auto 1fr; min-width: 0; }
 .toolbar { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); background: rgba(10, 16, 33, 0.7); backdrop-filter: blur(10px); }
