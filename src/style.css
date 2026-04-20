@@ -29,6 +29,11 @@ select:focus, .rank-name-input:focus { outline: 1px solid rgba(125, 235, 207, 0.
 .brand h1 { margin: 0; font-size: 15px; line-height: 1.15; }
 .brand p { margin: 4px 0 0; color: #9fb0d0; font-size: 11px; line-height: 1.2; }
 .primary, .row-actions button, .asset-card, .template-card { display: inline-flex; align-items: center; gap: 8px; border-radius: 12px; transition: 0.18s ease; }
+.selected-panel { display: grid; gap: 12px; }
+.selected-panel-row { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 10px; align-items: center; }
+.selected-panel-label { color: #cbd8ff; font-size: 13px; font-weight: 700; }
+.selected-panel-actions { display: flex; justify-content: flex-start; }
+.selected-panel select { min-width: 0; }
 .import-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .primary { width: 100%; justify-content: center; padding: 10px 12px; color: white; background: linear-gradient(135deg, #5b7cfa, #25c2a0); box-shadow: 0 10px 24px rgba(36, 98, 255, 0.22); font-size: 13px; }
 .primary.secondary { background: rgba(255, 255, 255, 0.07); box-shadow: none; border: 1px solid rgba(255, 255, 255, 0.08); }
