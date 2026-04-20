@@ -95,8 +95,9 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .item-search-overlay, .item-search-overlay::before, .item-search-overlay::after { transition: opacity 180ms ease; }
 .library-panel { width: min(1200px, 100%); margin: 0 auto; border-radius: 0; padding: 18px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-top: 1px solid rgba(255,255,255,0.14); }
 .library-panel .asset-card img { width: 72px; height: 72px; object-fit: cover; border-radius: 14px; }
-.asset-card-image { padding: 8px; background: rgba(255,255,255,0.05); justify-content: center; }
+.asset-card-image { padding: 0; margin: 0; background: transparent; justify-content: center; border-radius: 0; box-shadow: none; }
 .asset-card-image span, .asset-card-image em { display: none; }
+.library-panel .asset-card-image img { width: 100%; height: 100%; border-radius: 0; display: block; }
 .flying-back { position: fixed; z-index: 9999; pointer-events: none; border-radius: 18px; overflow: hidden; transition: left 320ms ease, top 320ms ease, width 320ms ease, height 320ms ease, opacity 320ms ease, transform 320ms ease; box-shadow: 0 18px 40px rgba(0,0,0,0.35); opacity: 0.95; }
 .flying-to-layer { border-radius: 14px; }
 .flying-to-layer img { object-fit: contain; background: rgba(0,0,0,0); }
