@@ -89,6 +89,7 @@ function App() {
   const [templates, setTemplates] = useState<Template[]>(INITIAL_TEMPLATES)
   const [rankCategories, setRankCategories] = useState<RankCategory[]>(INITIAL_RANK_CATEGORIES_VIDEO)
   const [path, setPath] = useState(window.location.pathname)
+  const [agreementOpen, setAgreementOpen] = useState(window.location.pathname === '/delta')
   const [templateId, setTemplateId] = useState<TemplateId>(window.location.pathname.startsWith('/video') ? 'video' : 'clean')
   const [canvasBackgroundColor, setCanvasBackgroundColor] = useState('#ffffff')
   const [deltaSearchEnabled, setDeltaSearchEnabled] = useState(true)
@@ -144,8 +145,16 @@ function App() {
     return () => window.removeEventListener('popstate', onPopState)
   }, [])
   React.useEffect(() => {
-    if (path === '/video') switchTemplate('video')
-    else if (path === '/delta' || path === '/') switchTemplate('clean')
+    if (path === '/video') {
+      switchTemplate('video')
+      setAgreementOpen(false)
+    } else if (path === '/delta') {
+      switchTemplate('clean')
+      setAgreementOpen(true)
+    } else if (path === '/') {
+      switchTemplate('clean')
+      setAgreementOpen(false)
+    }
   }, [path])
 
   const navigate = (nextPath: string) => {
@@ -423,6 +432,7 @@ function App() {
   if (path === '/') return <HomePage onOpen={navigate} />
 
   return <div className="app-shell">
+    {agreementOpen && path === '/delta' && <div className="agreement-backdrop" role="dialog" aria-modal="true"><div className="agreement-modal"><div className="agreement-title">君子协定</div><div className="agreement-body"><p>1. 由于网站有运营成本，所以本工具为【点赞投币关注后免费使用】，请陛下移步 <a href="https://space.bilibili.com/227403410?spm_id_from=333.788.0.0" target="_blank" rel="noreferrer">有所梦_</a> 。</p><p>2. 如对本工具有问题或者有定制需求，请【点赞投币关注】后加QQ群：1093037698 讨论。</p><p>3. 使用本工具制作图片及视频发布时，请注明工具来源，在b站@<a href="https://space.bilibili.com/227403410?spm_id_from=333.788.0.0" target="_blank" rel="noreferrer">有所梦_</a> 或者引用网站链接即可。</p></div><button className="agreement-button" onClick={() => setAgreementOpen(false)}>朕已阅</button></div></div>}
     <aside className="sidebar">
       <div className="brand"><div className="brand-badge"><Wrench size={22} strokeWidth={2.2} /></div><div><h1>从夯到拉锐评工具</h1><p><a href="https://space.bilibili.com/227403410?spm_id_from=333.788.0.0" target="_blank" rel="noreferrer">有所梦_ B站使用教程</a></p></div></div>
       <div className="import-row">
