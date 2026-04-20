@@ -5,6 +5,22 @@ body { background: radial-gradient(circle at top left, rgba(78, 110, 255, 0.25),
 button, input, select { font: inherit; }
 button { border: 0; cursor: pointer; }
 select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.06); color: #edf2ff; padding: 10px 12px; }
+.home-shell { min-height: 100%; display: grid; place-items: center; padding: 40px 20px; }
+.home-hero { width: min(1040px, 100%); padding: 34px; border-radius: 28px; background: rgba(10, 16, 33, 0.76); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 30px 80px rgba(0,0,0,0.34); backdrop-filter: blur(12px); }
+.home-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; background: rgba(37,194,160,0.14); color: #c9fff1; font-size: 13px; font-weight: 700; margin-bottom: 16px; letter-spacing: .02em; }
+.home-hero h1 { margin: 0; font-size: clamp(32px, 4vw, 50px); line-height: 1.08; letter-spacing: -0.04em; }
+.home-lead { margin: 14px 0 0; color: #bfd0f0; font-size: 16px; line-height: 1.75; max-width: 56ch; }
+.home-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 24px; }
+.home-card { text-align: left; padding: 18px 20px; border-radius: 20px; background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.05)); border: 1px solid rgba(255,255,255,0.08); color: #eaf1ff; display: grid; gap: 10px; min-height: 132px; box-shadow: 0 16px 32px rgba(0,0,0,0.12); }
+.home-card:hover { transform: translateY(-2px); border-color: rgba(91,124,250,0.55); background: linear-gradient(180deg, rgba(91,124,250,0.16), rgba(255,255,255,0.06)); }
+.home-card-emoji { font-size: 24px; }
+.home-card strong { font-size: 18px; }
+.home-card span { color: #9fb0d0; font-size: 13px; line-height: 1.5; }
+.home-copy { margin-top: 24px; padding: 20px; border-radius: 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); }
+.home-copy p { margin: 0 0 10px; color: #dfe8fb; line-height: 1.85; font-size: 14px; }
+.home-copy p:first-child { color: #7debcf; font-weight: 800; font-size: 15px; }
+.home-copy p:last-child { margin-bottom: 0; }
+.home-copy a { color: #9cc7ff; }
 .app-shell { display: grid; grid-template-columns: 248px 1fr; height: 100%; }
 .sidebar { padding: 14px; border-right: 1px solid rgba(255, 255, 255, 0.08); background: rgba(8, 13, 28, 0.86); overflow: auto; }
 .brand { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; }
