@@ -52,7 +52,7 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .canvas-edit-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 14px; align-items: center; }
 .canvas-edit-row .toggle-row { display: flex; align-items: center; gap: 10px; min-height: 38px; color: #edf2ff; font-size: 13px; }
 .settings-stack { display: grid; gap: 8px; }
-.setting-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 34px; }
+.setting-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 36px; }
 .setting-label { display: inline-flex; align-items: center; gap: 8px; color: #edf2ff; font-size: 13px; font-weight: 600; line-height: 1.2; }
 .setting-inline { display: inline-flex; align-items: center; gap: 6px; justify-self: end; }
 .setting-inline span { color: #94a5c8; font-size: 13px; }
