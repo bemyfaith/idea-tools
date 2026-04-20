@@ -215,7 +215,7 @@ function App() {
     const image = new Image()
     image.onload = () => {
       const aspect = image.naturalWidth / Math.max(image.naturalHeight, 1)
-      const maxWidth = stageBox.width * 0.42
+      const maxWidth = stageBox.width * 0.65
       const maxHeight = stageBox.height * 0.42
       let width = maxWidth
       let height = width / aspect
