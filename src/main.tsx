@@ -211,39 +211,52 @@ function App() {
     const item = library.find((entry) => entry.sourceId === sourceId)
     const stageBox = stageRef.current?.getBoundingClientRect()
     if (!item || !stageBox) return
-    const width = Math.min(340, stageBox.width * 0.28)
-    const height = width
     const currentDuration = (templateState[templateId].library.find((entry) => entry.sourceId === sourceId)?.animationDuration ?? Number(deltaSearchDefaultDuration)) || 3
-    const nextItem = createCanvasItem({
-      name: item.name,
-      src: item.src,
-      x: (stageBox.width - width) / 2,
-      y: (stageBox.height - height) / 2 - 30,
-      width,
-      height,
-      rotation: 0,
-      categoryId: '',
-      sourceId: item.sourceId,
-      isPreview: true,
-      animationDuration: deltaSearchEnabled ? currentDuration : 0,
-    }, deltaSearchEnabled ? 'searching' : 'revealed')
-    setTemplateState((prev) => ({
-      ...prev,
-      [templateId]: { ...prev[templateId], items: [...prev[templateId].items, nextItem] },
-    }))
-    if (templateId === 'clean') {
-      void playSearchSound(currentDuration)
-      window.setTimeout(() => {
-        setTemplateState((prev) => ({
-          ...prev,
-          [templateId]: {
-            ...prev[templateId],
-            items: prev[templateId].items.map((item) => item.id === nextItem.id ? { ...item, revealState: 'revealed', isPreview: false } : item),
-          },
-        }))
-      }, currentDuration * 1000)
+    const image = new Image()
+    image.onload = () => {
+      const aspect = image.naturalWidth / Math.max(image.naturalHeight, 1)
+      const maxWidth = stageBox.width * 0.42
+      const maxHeight = stageBox.height * 0.42
+      let width = maxWidth
+      let height = width / aspect
+      if (height > maxHeight) {
+        height = maxHeight
+        width = height * aspect
+      }
+      width = Math.max(160, Math.min(width, stageBox.width * 0.6))
+      height = Math.max(160, Math.min(height, stageBox.height * 0.6))
+      const nextItem = createCanvasItem({
+        name: item.name,
+        src: item.src,
+        x: (stageBox.width - width) / 2,
+        y: (stageBox.height - height) / 2 - 30,
+        width,
+        height,
+        rotation: 0,
+        categoryId: '',
+        sourceId: item.sourceId,
+        isPreview: true,
+        animationDuration: deltaSearchEnabled ? currentDuration : 0,
+      }, deltaSearchEnabled ? 'searching' : 'revealed')
+      setTemplateState((prev) => ({
+        ...prev,
+        [templateId]: { ...prev[templateId], items: [...prev[templateId].items, nextItem] },
+      }))
+      if (templateId === 'clean') {
+        void playSearchSound(currentDuration)
+        window.setTimeout(() => {
+          setTemplateState((prev) => ({
+            ...prev,
+            [templateId]: {
+              ...prev[templateId],
+              items: prev[templateId].items.map((item) => item.id === nextItem.id ? { ...item, revealState: 'revealed', isPreview: false } : item),
+            },
+          }))
+        }, currentDuration * 1000)
+      }
+      setSelectedId(nextItem.id)
     }
-    setSelectedId(nextItem.id)
+    image.src = item.src
   }
 
   const applyLibraryDuration = (sourceId: string, duration: number) => {
