@@ -340,6 +340,13 @@ function App() {
     }
     if (startEl && stageBox) {
       const from = startEl.getBoundingClientRect()
+      setTemplateState((prev) => ({
+        ...prev,
+        [templateId]: {
+          ...prev[templateId],
+          items: prev[templateId].items.map((it) => it.id === itemId ? { ...it, isPreview: true } : it),
+        },
+      }))
       setFlyingToLayer({ itemId, src: item.src, x: from.left, y: from.top, w: from.width, h: from.height })
       requestAnimationFrame(() => {
         setFlyingToLayer((prev) => prev ? { ...prev, x: stageBox.left + target.x, y: stageBox.top + target.y, w: target.width, h: target.height } : prev)
