@@ -30,7 +30,7 @@ const INITIAL_RANK_CATEGORIES_CLEAN: RankCategory[] = [
 
 const INITIAL_TEMPLATES: Template[] = [
   { id: 'clean', name: '三角洲风格', description: '', stageClass: 'template-clean', railClass: 'template-clean-rail', itemClass: 'template-clean-item', defaultPositions: [{ x: 120, y: 100 }, { x: 340, y: 100 }, { x: 560, y: 100 }, { x: 780, y: 100 }, { x: 1000, y: 100 }], showRightDividers: true },
-  { id: 'video', name: '视频同款', description: '', stageClass: 'template-video', railClass: 'template-video-rail', itemClass: 'template-video-item', defaultPositions: [{ x: 176, y: 34 }, { x: 416, y: 34 }, { x: 656, y: 34 }, { x: 896, y: 34 }, { x: 1136, y: 34 }], showRightDividers: true },
+  { id: 'video', name: '原始风格', description: '', stageClass: 'template-video', railClass: 'template-video-rail', itemClass: 'template-video-item', defaultPositions: [{ x: 176, y: 34 }, { x: 416, y: 34 }, { x: 656, y: 34 }, { x: 896, y: 34 }, { x: 1136, y: 34 }], showRightDividers: true },
 ]
 const uid = () => Math.random().toString(36).slice(2, 10)
 const SEARCH_REVEAL_MS = 2600
