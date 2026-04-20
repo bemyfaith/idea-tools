@@ -85,10 +85,6 @@ select:focus, .rank-name-input:focus { outline: 1px solid rgba(125, 235, 207, 0.
 .stage.template-video::before { left: -1px; top: -1px; right: -1px; bottom: -1px; }
 .stage-rank-rail { position: absolute; inset: 0; display: grid; grid-template-columns: 141px 1fr; z-index: 1; background: rgba(255,255,255,1); }
 .stage-rank-title-col { display: grid; grid-template-rows: repeat(5, minmax(0, 1fr)); }
-
-.stage-rank-resizer { width: 10px; cursor: col-resize; background: linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.06)); position: relative; }
-.stage-rank-resizer::after { content: ''; position: absolute; inset: 0; margin: auto; width: 2px; height: 42px; border-radius: 999px; background: rgba(255,255,255,0.45); box-shadow: 0 0 0 1px rgba(0,0,0,0.08); }
-.stage-rank-resizer:hover { background: linear-gradient(180deg, rgba(125,235,207,0.34), rgba(125,235,207,0.12)); }
 .stage-rank-title { text-align: center; border-radius: 0; padding: 0; margin: 0; font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center; min-height: 0; height: 100%; text-shadow: none; }
 .stage-rank-grid { position: relative; display: grid; grid-template-rows: repeat(5, minmax(0, 1fr)); }
 .stage-rank-grid.no-dividers .stage-rank-row { border-bottom: 0; }
