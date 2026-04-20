@@ -67,12 +67,12 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .rank-text-color-input::-webkit-color-swatch { border: none; border-radius: 50%; }
 .rank-size-input { width: 42px; height: 34px; padding: 0 4px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.06); color: #edf2ff; text-align: center; font-size: 12px; }
 
-.workspace { display: grid; grid-template-rows: auto 1fr; min-width: 0; }
+.workspace { display: grid; grid-template-rows: auto 1fr; min-width: 0; min-height: 100vh; }
 .toolbar { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); background: rgba(10, 16, 33, 0.7); backdrop-filter: blur(10px); }
 .toolbar-left { display: flex; align-items: center; gap: 8px; color: #d9e4ff; font-weight: 700; }
-.stage-wrap { padding: 8px 10px 12px; overflow: auto; display: grid; gap: 0; align-content: start; }
-.library-panel { width: 100%; max-width: none; margin: 0; border-radius: 0; padding: 10px 10px 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-top: 1px solid rgba(255,255,255,0.14); }
-.stage { position: relative; width: 100%; max-width: none; min-height: 640px; margin: 0; border-radius: 0; background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)), rgba(7, 11, 24, 0.92); border: 0; overflow: hidden; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35); }
+.stage-wrap { padding: 8px 10px 12px; overflow: auto; display: grid; gap: 0; align-content: start; min-height: calc(100vh - 60px); }
+.library-panel { width: 100%; max-width: none; margin: 0; border-radius: 0; padding: 10px 10px 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-top: 1px solid rgba(255,255,255,0.14); min-height: calc(100vh - 760px); }
+.stage { position: relative; width: 100%; max-width: none; min-height: calc(100vh - 170px); margin: 0; border-radius: 0; background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)), rgba(7, 11, 24, 0.92); border: 0; overflow: hidden; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35); }
 .stage.template-video { background: linear-gradient(180deg, rgba(17, 24, 39, 1), rgba(7, 11, 24, 1)); opacity: 1; padding-left: 0; }
 .stage.template-clean { background: rgba(255,255,255,1); opacity: 1; color: #111827; }
 .stage.template-clean .stage-empty { color: #6b7280; }
