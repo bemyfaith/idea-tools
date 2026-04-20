@@ -68,7 +68,7 @@ async function waitForImages(root: HTMLElement) {
 function HomePage({ onOpen }: { onOpen: (path: string) => void }) {
   return <div className="home-shell">
     <div className="home-hero">
-      <h1>有所梦_ 奇思妙想小工具站🎯</h1>
+      <h1>✨有所梦_ 奇思妙想小工具站🎯</h1>
       <div className="home-cards">
         <button className="home-card home-card-wide" onClick={() => onOpen('/delta')}>
           <span className="home-card-emoji">🔍</span>
