@@ -68,7 +68,7 @@ async function waitForImages(root: HTMLElement) {
 function App() {
   const [templates, setTemplates] = useState<Template[]>(INITIAL_TEMPLATES)
   const [rankCategories, setRankCategories] = useState<RankCategory[]>(INITIAL_RANK_CATEGORIES_VIDEO)
-  const [templateId, setTemplateId] = useState<TemplateId>('video')
+  const [templateId, setTemplateId] = useState<TemplateId>('clean')
   const [canvasBackgroundColor, setCanvasBackgroundColor] = useState('#ffffff')
   const [deltaSearchEnabled, setDeltaSearchEnabled] = useState(true)
   const [deltaSearchDefaultDuration, setDeltaSearchDefaultDuration] = useState('2')
