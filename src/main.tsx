@@ -68,7 +68,6 @@ async function waitForImages(root: HTMLElement) {
 function HomePage({ onOpen }: { onOpen: (path: string) => void }) {
   return <div className="home-shell">
     <div className="home-hero">
-      <div className="home-badge">✨ 共创计划</div>
       <h1>有所梦_ 奇思妙想小工具站</h1>
       <p className="home-lead">把想法变成能直接上手的小工具。挑一个入口，马上开干。🎯</p>
       <div className="home-cards">
