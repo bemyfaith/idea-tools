@@ -53,11 +53,11 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .canvas-edit-row .toggle-row { display: flex; align-items: center; gap: 10px; min-height: 38px; color: #edf2ff; font-size: 13px; }
 .settings-stack { display: grid; gap: 8px; }
 .setting-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 34px; }
-.setting-label { display: inline-flex; align-items: center; gap: 8px; color: #edf2ff; font-size: 12px; font-weight: 600; line-height: 1.2; }
+.setting-label { display: inline-flex; align-items: center; gap: 8px; color: #edf2ff; font-size: 13px; font-weight: 600; line-height: 1.2; }
 .setting-inline { display: inline-flex; align-items: center; gap: 6px; justify-self: end; }
-.setting-inline span { color: #94a5c8; font-size: 12px; }
+.setting-inline span { color: #94a5c8; font-size: 13px; }
 .canvas-background-wrap { display: grid; grid-template-columns: auto auto; align-items: center; gap: 8px; justify-content: end; }
-.canvas-background-label { font-size: 12px; color: #cbd8ff; white-space: nowrap; }
+.canvas-background-label { font-size: 13px; color: #cbd8ff; white-space: nowrap; }
 .canvas-background-input { width: 44px; height: 34px; padding: 0; border: 1px solid rgba(255,255,255,0.18); background: #ffffff; border-radius: 0; overflow: hidden; appearance: none; -webkit-appearance: none; }
 .canvas-background-input-round { width: 34px; height: 34px; border-radius: 50%; }
 .canvas-background-input::-webkit-color-swatch-wrapper { padding: 0; }
@@ -65,7 +65,7 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .rank-color-input::-webkit-color-swatch-wrapper, .rank-text-color-input::-webkit-color-swatch-wrapper { padding: 0; }
 .rank-color-input::-webkit-color-swatch { border: none; border-radius: 0; }
 .rank-text-color-input::-webkit-color-swatch { border: none; border-radius: 50%; }
-.rank-size-input { width: 42px; height: 34px; padding: 0 4px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.06); color: #edf2ff; text-align: center; font-size: 12px; }
+.rank-size-input { width: 46px; height: 36px; padding: 0 4px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.06); color: #edf2ff; text-align: center; font-size: 13px; }
 
 .workspace { display: grid; grid-template-rows: auto 1fr; min-width: 0; min-height: 100vh; }
 .toolbar { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); background: rgba(10, 16, 33, 0.7); backdrop-filter: blur(10px); }
