@@ -65,10 +65,39 @@ async function waitForImages(root: HTMLElement) {
   )
 }
 
+function HomePage({ onOpen }: { onOpen: (path: string) => void }) {
+  return <div className="home-shell">
+    <div className="home-hero">
+      <div className="home-badge">✨ 共创计划</div>
+      <h1>有所梦_ 奇思妙想小工具站</h1>
+      <p className="home-lead">把想法变成能直接上手的小工具。挑一个入口，马上开干。🎯</p>
+      <div className="home-cards">
+        <button className="home-card" onClick={() => onOpen('/delta')}>
+          <span className="home-card-emoji">🔍</span>
+          <strong>三角洲风格</strong>
+          <span>搜索动画 / 音效 / 等级模板</span>
+        </button>
+        <button className="home-card" onClick={() => onOpen('/video')}>
+          <span className="home-card-emoji">🎬</span>
+          <strong>视频同款</strong>
+          <span>白底模板 / 轻量展示 / 录屏友好</span>
+        </button>
+      </div>
+      <div className="home-copy">
+        <p>共创计划：</p>
+        <p>各位大人，up本身是一个程序员，可以熟练制作各种网页小工具等等互联网项目，各位大人如有奇思妙想的小主意可以告诉我，你来出💡主意我来开发。</p>
+        <p>如决定开发的为免费小工具，我会在本网站及各种路径注明由我们一起共创，不会剽窃你的想法。</p>
+        <p>如决定开发的为付费小工具，我会跟你一起分成且注明由你一起共创，具体细节还需要一起商定。</p>
+      </div>
+    </div>
+  </div>
+}
+
 function App() {
   const [templates, setTemplates] = useState<Template[]>(INITIAL_TEMPLATES)
   const [rankCategories, setRankCategories] = useState<RankCategory[]>(INITIAL_RANK_CATEGORIES_VIDEO)
-  const [templateId, setTemplateId] = useState<TemplateId>('clean')
+  const [path, setPath] = useState(window.location.pathname)
+  const [templateId, setTemplateId] = useState<TemplateId>(window.location.pathname.startsWith('/video') ? 'video' : 'clean')
   const [canvasBackgroundColor, setCanvasBackgroundColor] = useState('#ffffff')
   const [deltaSearchEnabled, setDeltaSearchEnabled] = useState(true)
   const [deltaSearchDefaultDuration, setDeltaSearchDefaultDuration] = useState('2')
@@ -117,6 +146,20 @@ function App() {
   React.useEffect(() => () => clearRevealTimers(), [])
   React.useEffect(() => { const close = () => setContextMenu(null); window.addEventListener('click', close); return () => window.removeEventListener('click', close) }, [])
   React.useEffect(() => { if (!contextMenu) setCustomDurationInput('') }, [contextMenu])
+  React.useEffect(() => {
+    const onPopState = () => setPath(window.location.pathname)
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [])
+  React.useEffect(() => {
+    if (path === '/video') setTemplateId('video')
+    else if (path === '/delta' || path === '/') setTemplateId('clean')
+  }, [path])
+
+  const navigate = (nextPath: string) => {
+    window.history.pushState({}, '', nextPath)
+    setPath(nextPath)
+  }
 
   const makeLibraryItem = (fileName: string, src: string, posIndex: number) => {
     const pos = template.defaultPositions[posIndex % template.defaultPositions.length]
@@ -377,6 +420,8 @@ function App() {
       setLoading(false)
     }
   }
+
+  if (path === '/') return <HomePage onOpen={navigate} />
 
   return <div className="app-shell">
     <aside className="sidebar">
