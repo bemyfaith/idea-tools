@@ -72,15 +72,10 @@ function HomePage({ onOpen }: { onOpen: (path: string) => void }) {
       <h1>有所梦_ 奇思妙想小工具站</h1>
       <p className="home-lead">把想法变成能直接上手的小工具。挑一个入口，马上开干。🎯</p>
       <div className="home-cards">
-        <button className="home-card" onClick={() => onOpen('/delta')}>
+        <button className="home-card home-card-wide" onClick={() => onOpen('/delta')}>
           <span className="home-card-emoji">🔍</span>
-          <strong>三角洲风格</strong>
-          <span>搜索动画 / 音效 / 等级模板</span>
-        </button>
-        <button className="home-card" onClick={() => onOpen('/video')}>
-          <span className="home-card-emoji">🎬</span>
-          <strong>视频同款</strong>
-          <span>白底模板 / 轻量展示 / 录屏友好</span>
+          <strong>锐评从夯到拉模板</strong>
+          <span>三角洲风格 · 搜索动画 / 音效 / 等级模板</span>
         </button>
       </div>
       <div className="home-copy">
