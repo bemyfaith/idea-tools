@@ -8,7 +8,6 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .home-shell { min-height: 100%; display: grid; place-items: center; padding: 40px 20px; }
 .home-hero { width: min(1040px, 100%); padding: 34px; border-radius: 28px; background: rgba(10, 16, 33, 0.76); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 30px 80px rgba(0,0,0,0.34); backdrop-filter: blur(12px); }
 .home-hero h1 { margin: 0; font-size: clamp(32px, 4vw, 50px); line-height: 1.08; letter-spacing: -0.04em; }
-.home-lead { margin: 14px 0 0; color: #bfd0f0; font-size: 16px; line-height: 1.75; max-width: 56ch; }
 .home-cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; margin-top: 24px; }
 .home-card { text-align: left; padding: 20px 22px; border-radius: 20px; background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.05)); border: 1px solid rgba(255,255,255,0.08); color: #eaf1ff; display: grid; gap: 10px; min-height: 136px; box-shadow: 0 16px 32px rgba(0,0,0,0.12); width: 100%; }
 .home-card-wide { max-width: 100%; }
