@@ -352,6 +352,7 @@ function App() {
   const switchTemplate = (nextTemplateId: TemplateId) => {
     setTemplateId(nextTemplateId)
     setRankCategories(nextTemplateId === 'video' ? INITIAL_RANK_CATEGORIES_VIDEO : INITIAL_RANK_CATEGORIES_CLEAN)
+    setCanvasBackgroundColor(nextTemplateId === 'video' ? '#ffffff' : '#19231e')
   }
 
   const shiftSelected = (dx: number, dy: number) => { if (!selected) return; updateItem(selected.id, { x: selected.x + dx, y: selected.y + dy }) }
