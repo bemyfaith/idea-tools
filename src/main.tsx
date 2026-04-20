@@ -147,8 +147,8 @@ function App() {
     return () => window.removeEventListener('popstate', onPopState)
   }, [])
   React.useEffect(() => {
-    if (path === '/video') setTemplateId('video')
-    else if (path === '/delta' || path === '/') setTemplateId('clean')
+    if (path === '/video') switchTemplate('video')
+    else if (path === '/delta' || path === '/') switchTemplate('clean')
   }, [path])
 
   const navigate = (nextPath: string) => {
