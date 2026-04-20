@@ -73,8 +73,9 @@ select, .rank-name-input { width: 100%; border-radius: 10px; border: 1px solid r
 .stage-empty { position: absolute; inset: 0; display: grid; place-items: center; color: #93a5cb; font-size: 15px; z-index: 1; }
 .item { z-index: 2; }
 .item-preview { z-index: 5; }
-.item-preview.item-searching .item-frame { opacity: 0; }
+.item-preview.item-searching .item-frame img { opacity: 0; }
 .item-frame { transition: opacity 180ms ease; }
+.item-frame img { transition: opacity 180ms ease; }
 .item.selected .item-frame { box-shadow: 0 0 0 2px rgba(37, 194, 160, 0.9), 0 18px 40px rgba(0, 0, 0, 0.35); }
 .item.template-clean-item .item-frame { border-radius: 0; }
 .item-frame { width: 100%; height: 100%; border-radius: 0; overflow: hidden; background: rgba(255, 255, 255, 1); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.2); position: relative; }
